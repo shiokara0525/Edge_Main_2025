@@ -1,21 +1,12 @@
 #include <Arduino.h>
 
-#include<timer.h>
-#include"input.h"
-#include"output.h"
-#include"process.h"
-#include"Sup.h"
-#include"ESP_communicate.h"
-
-
-timer Ball_period;
-timer Line_period;
-
-timer Main_timer;
-timer Mode_timer;
-timer ball_Get;
-timer line_Get;
-timer ESP_send;
+#include<timer.h>              //タイマーのクラス定義
+#include"input.h"              //センサー類(ボール、ライン、カメラ）のクラス定義
+#include"output.h"             //出力(モーター、キッカー）のクラス定義
+#include"process.h"            //処理系統（アタッカーディフェンスそれぞれ）のクラス定義
+#include"Sup.h"                //その他便利クラスの定義
+#include"ESP_communicate.h"    //ESPとの通信関連のクラス定義
+#include"central_availables.h" //ロボットの状態の一番下の部分に使う変数のクラス定義
 
 
 
@@ -38,17 +29,17 @@ void setup(){
 
 
 void loop(){
-  Main_timer.reset();
-  if(2500 < Line_period.read_us()){
+  central.Main_timer.reset();
+  if(2500 < central.Line_period.read_us()){
     line.getLINE_Vec();
-    Line_period.reset();
+    central.Line_period.reset();
   }
-  if(2500 < Ball_period.read_us()){
+  if(2500 < central.Ball_period.read_us()){
     ball.getBallposition();
     // Serial.print(" Ball ");
     // Serial.print(Ball_period.read_ms());
     // Serial.println();
-    Ball_period.reset();
+    central.Ball_period.reset();
   }
   cam_front.getCamdata();
   cam_back.getCamdata();
@@ -58,7 +49,7 @@ void loop(){
     if(central.Mode != central.Mode_old){
       central.Mode_old = central.Mode;
       MOTOR.motor_0();
-      Mode_timer.reset();
+      central.Mode_timer.reset();
       kicker.stop();
       Serial8.write(38);
       Serial8.write(10);
@@ -74,7 +65,7 @@ void loop(){
     if(central.Mode != central.Mode_old){
       central.Mode_old = central.Mode;
       attack.available_set(central.Values);
-      Mode_timer.reset();
+      central.Mode_timer.reset();
       kicker.stop();
     }
 
@@ -85,7 +76,7 @@ void loop(){
     if(central.Mode != central.Mode_old){
       central.Mode_old = central.Mode;
       defence.available_set();
-      Mode_timer.reset();
+      central.Mode_timer.reset();
       kicker.stop();
     }
 
