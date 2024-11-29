@@ -179,30 +179,6 @@ void loop(){
         MOTOR.motor_ac(AC_val);
       }
 
-      // Serial.print(" go_ang : ");
-      // Serial.print(go_ang.degree);
-      // Serial.print(" PS4_theta : ");
-      // Serial.print(PS4_theta);
-      // Serial.print(" PS4_r : ");
-      // Serial.print(PS4_r);
-      // Serial.print(" ac : ");
-      // Serial.print(AC_val);
-      // ac.print();
-      // Serial.print(" Circle : ");
-      // Serial.print(PS4_Circle);
-      // line.print();
-      // Serial.println();
-
-      // if(PS4_Circle){
-      //   kick_ = 1;
-      //   PS4_Circle = 0;
-      // }
-
-      // if(PS4_Square){
-      //   ac.dir_target = ac.first;
-      //   PS4_Square = 0;
-      // }
-
       if(200 < ball.is_get.readStateTimer(1)){
         kick_ = 1;
       }
