@@ -247,7 +247,7 @@ void ESP_communicate::read_from_ESP(byte (&data)[2]){
     // ac.print();
   }
   else if(data[1] == 8){
-    PS4.Kick = 1;
+    ESP.Kick = 1;
   }
   else if(data[1] == 9){
     int y = data[0] - 128;
