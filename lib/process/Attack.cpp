@@ -2,12 +2,12 @@
 
 
 void Attack::available_set(int *check_val){ //変数を受け取ったり三次関数を求める関数
-  ang_0 = Values[0];
-  ang_20 = Values[1];
-  ang_30 = Values[2];
-  ang_45 = Values[3];
-  AC_D = Values[4] / 100.0;
-  RA_e = Values[5] / 100.0;
+  ang_0 = central.Values[0];
+  ang_20 = central.Values[1];
+  ang_30 = central.Values[2];
+  ang_45 = central.Values[3];
+  AC_D = central.Values[4] / 100.0;
+  RA_e = central.Values[5] / 100.0;
   A = 0;
   c = 0;
   float ang[4] = {0,20,30,45};
@@ -28,7 +28,7 @@ void Attack::available_set(int *check_val){ //変数を受け取ったり三次�
   Serial.print(" RA_d : ");
   Serial.print(RA_d);
   Serial.println();
-  go_val = val_max;
+  go_val = central.val_max;
   play_time.reset();
   first_ang = ac.dir_n;
   goang_ma.setLenth(100);
@@ -56,7 +56,7 @@ void Attack::attack(){
 
   float AC_val = 100;                  //姿勢制御の出力
   int max_val = go_val;                //進む出力
-  float target = ac_tirget;           //目標角度
+  float target = central.ac_tirget;           //目標角度
 
 
   int AC_flag = 0;                     //0だったら絶対的な角度とる 1だったらゴール向く

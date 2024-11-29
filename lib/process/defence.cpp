@@ -1,7 +1,7 @@
 #include<defence.h>
 
 void Defence::available_set(){
-  go_val = val_max;
+  go_val = central.val_max;
   A = 0;
   c = 0;
   Mode_timer.reset();
@@ -24,7 +24,7 @@ void Defence::defence(){
 
   float AC_val = 100;                  //姿勢制御の出力
   int max_val = go_val;                //進む出力
-  float target = ac_tirget;           //目標角度
+  float target = central.ac_tirget;           //目標角度
 
   int AC_flag = 0;                     //0だったら絶対的な角度とる 1だったらゴール向く
   int kick_ = 0;                       //0だったらキックしない 1だったらキック

@@ -5,10 +5,8 @@
 #include<output.h>
 #include<timer.h>
 #include<Sup.h>
+#include<central_availables.h>
 
-extern int ac_tirget;
-extern int color;
-extern int val_max;
 
 class Defence{
     private:
