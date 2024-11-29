@@ -227,33 +227,6 @@ void loop(){
     }
     MOTOR.motor_0();
   }
-  // ball.print();
-  // Serial.print(" V : ");
-  // ball.vec_velocity.print();
-  // Serial.print(" | A : ");
-  // ball.vec_acc.print();
-  // Serial.println();
-  // Serial.print(">ball_V:");
-  // Serial.println(ball.vec_velocity.getMagnitude());
-  // Serial.print(">ball_A:");
-  // Serial.println(ball.vec_acc.getMagnitude());
-  // Serial.print(" | ");
-  // line.print();
-  // cam_front.print();
-  // Serial.print(" | ");
-  // cam_back.print();
-  // Serial.print(" Timer : ");
-  // Serial.print(Main_timer.read_us());
-  // line.print_2();
-  // Serial.println();
-  // ball.vec_down.print();
-  // Serial.print(" setup : ");
-  // Serial.print(attack.setplay_flag);
-  // ac.print();
-  // Serial.print(" Mode : ");
-  // Serial.print(Mode);
-  // Serial.println();
-  // Main_timer.reset();
 }
 
 
