@@ -31,6 +31,7 @@ class ESP_communicate{
 
     int goal_send_count = 0;
     int line_send_count = 0;
+    int Kick = 0;
 };
 
 extern ESP_communicate ESP;

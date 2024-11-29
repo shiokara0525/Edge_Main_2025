@@ -19,14 +19,6 @@ timer ESP_send;
 
 
 
-int goal_send_count = 0;
-int line_send_count = 0;
-
-int Kick = 0;
-
-int testMode = 0;
-
-
 
 void setup(){
   Serial.begin(9600);
@@ -42,6 +34,8 @@ void setup(){
 
   ESP.sendtoESP("START");
 }
+
+
 
 void loop(){
   Main_timer.reset();
@@ -72,8 +66,8 @@ void loop(){
       Serial8.write(37);
     }
 
-    kicker.run(Kick);
-    Kick = 0;
+    kicker.run(ESP.Kick);
+    ESP.Kick = 0;
   }
 
   else if(central.Mode == 1){
@@ -109,12 +103,12 @@ void loop(){
       Serial8.write(37);
     }
 
-    if(testMode == 0){
+    if(central.test_mode == 0){
       angle ang(0,true);
       float AC_val = ac.getAC_val();
       MOTOR.moveMotor_0(ang,central.val_max,AC_val,0);
     }
-    else if(testMode == 1){
+    else if(central.test_mode == 1){
       for(int i = 0; i < 4; i++){
         MOTOR.Moutput(i,255);
         delay(500);
@@ -122,15 +116,15 @@ void loop(){
         delay(100);
       }
     }
-    else if(testMode == 3){
+    else if(central.test_mode == 3){
       float AC_val = ac.getAC_val();
       MOTOR.motor_ac(AC_val);
     }
-    else if(testMode == 4){
+    else if(central.test_mode == 4){
       MOTOR.motor_0();
       kicker.TEST_();
     }
-    else if(testMode == 5){
+    else if(central.test_mode == 5){
       ESP.PS4.run();
     }
   }
@@ -183,6 +177,8 @@ void serialEvent7(){
 
   ESP.read_from_ESP(data_content);
 }
+
+
 
 void serialEvent3(){
   uint8_t reBuf[8];

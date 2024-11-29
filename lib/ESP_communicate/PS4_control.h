@@ -12,5 +12,4 @@ public:
     int R_r,R_theta;
     int Rotate_flag = 0;
     int Circle,Square;
-    int Kick = 0;
 };
