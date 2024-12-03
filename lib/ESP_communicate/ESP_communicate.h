@@ -27,7 +27,7 @@ class ESP_communicate{
     void sendtoESP(const char* message);
     int get_message_to_ESP(const char* message,byte (&send_content)[4]);
 
-    void read_from_ESP(byte (&data)[2]);
+    void read_from_ESP(byte (&data)[2],int label);
 
     int goal_send_count = 0;
     int line_send_count = 0;

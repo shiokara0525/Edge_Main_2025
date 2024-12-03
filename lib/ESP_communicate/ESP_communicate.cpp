@@ -162,7 +162,7 @@ void ESP_communicate::sendtoESP(const char* message){
 }
 
 
-void ESP_communicate::read_from_ESP(byte (&data)[2]){
+void ESP_communicate::read_from_ESP(byte (&data)[2],int label){
   unsigned int contain[2];
   int data_int;
   contain[0] = uint16_t(data[0]) << 8;
@@ -170,13 +170,13 @@ void ESP_communicate::read_from_ESP(byte (&data)[2]){
   data_int = contain[0] | contain[1];
 
 
-  if(data[1] == 1){
+  if(label == 1){
     central.Mode = data_int;
     Serial.print(" Mode : ");
     Serial.print(central.Mode);
     Serial.print(" | ");
   }
-  else if(data[1] == 2){
+  else if(label == 2){
     if(data_int == 15){
       sendtoESP("AC_DIR");
       Serial8.write(38);
@@ -219,10 +219,10 @@ void ESP_communicate::read_from_ESP(byte (&data)[2]){
       sendtoESP("BALL_CATCH");
     }
   }
-  else if(data[1] == 3){
+  else if(label == 3){
     central.val_max = data_int;
   }
-  else if(data[1] == 4){
+  else if(label == 4){
     central.color = data_int;
     if(central.color == YELLOW){
       cam_front.color = YELLOW;
@@ -233,23 +233,23 @@ void ESP_communicate::read_from_ESP(byte (&data)[2]){
       cam_back.color = YELLOW;
     }
   }
-  else if(data[1] == 5){
+  else if(label == 5){
     ball.get_th = data_int;
   }
-  else if(data[1] == 6){
+  else if(label == 6){
     MOTOR.NoneM_flag = data_int;
   }
-  else if(data[1] == 7){
+  else if(label == 7){
     ac.getnowdir();
     central.ac_tirget = ac.dir_n;
     ac.setup_2();
     // Serial.print(" !!!!!!!!!!! ");
     // ac.print();
   }
-  else if(data[1] == 8){
+  else if(label == 8){
     ESP.Kick = 1;
   }
-  else if(data[1] == 9){
+  else if(label == 9){
     int y = data[0] - 128;
     int x = data[1] - 128;
     PS4.theta = degrees(atan2(y,x));
@@ -261,13 +261,13 @@ void ESP_communicate::read_from_ESP(byte (&data)[2]){
     // Serial.print(PS4_theta);
     // Serial.println();
   }
-  else if(data[1] == 10){
+  else if(label == 10){
     Serial8.write(38);
     Serial8.write(0);
     Serial8.write(data_int);
     Serial8.write(37);
   }
-  else if(data[1] == 11){
+  else if(label == 11){
     int y = data[0] - 128;
     int x = data[1] - 128;
     PS4.R_theta = degrees(atan2(y,x));
@@ -285,27 +285,27 @@ void ESP_communicate::read_from_ESP(byte (&data)[2]){
     // Serial.print(PS4R_theta);
     // Serial.println();
   }
-  else if(data[1] == 13){
+  else if(label == 13){
     sendtoESP("NEOPIXEL_D");
   }
-  else if(data[1] == 14){
+  else if(label == 14){
     central.test_mode = data_int;
   }
-  else if(data[1] == 16){
+  else if(label == 16){
     sendtoESP("NEOPIXEL_A");
   }
-  else if(data[1] == 17){
+  else if(label == 17){
     attack.setplay_flag = data_int;
   }
-  else if(data[1] == 18){
+  else if(label == 18){
     PS4.Circle = 1;
   }
-  else if(data[1] == 19){
+  else if(label == 19){
     PS4.Square = 1;
   }
   else{
     for(int i = 0; i < 6; i++){
-      if(100 + i == data[1]){
+      if(100 + i == label){
         central.Values[i] = data_int;
         // Serial.print(" num : ");
         // Serial.print(i);

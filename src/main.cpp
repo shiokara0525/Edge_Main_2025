@@ -166,7 +166,7 @@ void serialEvent7(){
 
   byte data_content[2] = {data[2],data[3]};
 
-  ESP.read_from_ESP(data_content);
+  ESP.read_from_ESP(data_content,data[1]);
 }
 
 
