@@ -51,7 +51,7 @@ byte* Attack::getCheckval(){
 
 
 
-void Attack::attack(){
+Vector2D Attack::attack(){
   angle go_ang(ball.ang,true);         //進む角度のオブジェクト
 
   float AC_val = 100;                  //姿勢制御の出力
@@ -540,7 +540,8 @@ void Attack::attack(){
     // Serial.println();
   }
 
-  kicker.run(kick_);
+  central.Kick_on = kick_;
+  central.AC_value = AC_val;
   // Serial.print(" A : ");
   // Serial.print(A);
   // ac.print();

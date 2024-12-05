@@ -13,6 +13,11 @@ public:
   int ac_tirget;    //角度の目標値
   int val_max = 200;//モーターの出力
 
+  Vector2D go_vector;
+  float AC_value;
+  float Kick_on;
+  int AC_flag;
+
   int Values[6];    //ESPから送られてくる変数
 
   timer Main_timer; //１周期の秒数のタイマー
