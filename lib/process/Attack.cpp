@@ -2,23 +2,23 @@
 
 
 void Attack::available_set(int *check_val){ //変数を受け取ったり三次関数を求める関数
-  ang_0 = central.Values[0];
-  ang_20 = central.Values[1];
-  ang_30 = central.Values[2];
-  ang_45 = central.Values[3];
+  RA_a = central.Values[0] / 100.0;
+  RA_b = central.Values[1] / 100.0;
+  RA_c = central.Values[2];
+  RA_d = central.Values[3];
   AC_D = central.Values[4] / 100.0;
-  RA_e = central.Values[5] / 100.0;
   A = 0;
   c = 0;
-  float ang[4] = {0,20,30,45};
-  float m1 = ang_0 / ((ang[0] - ang[1]) * (ang[0] - ang[2]) * (ang[0] - ang[3]));
-  float m2 = ang_20 / ((ang[1] - ang[0]) * (ang[1] - ang[2]) * (ang[1] - ang[3]));
-  float m3 = ang_30 / ((ang[2] - ang[0]) * (ang[2] - ang[1]) * (ang[2] - ang[3]));
-  float m4 = ang_45 / ((ang[3] - ang[0]) * (ang[3] - ang[1]) * (ang[3] - ang[2]));
-  RA_a = m1 + m2 + m3 + m4;
-  RA_b = -(m1 * (ang[1] + ang[2] + ang[3]) + m2 * (ang[0] + ang[2] + ang[3]) + m3 * (ang[0] + ang[1] + ang[3]) + m4 * (ang[0] + ang[1] + ang[2]));
-  RA_c = m1 * (ang[1] * ang[2] + ang[1] * ang[3] + ang[2] * ang[3]) + m2 * (ang[0] * ang[2] + ang[0] * ang[3] + ang[2] * ang[3]) + m3 * (ang[0] * ang[1] + ang[0] * ang[3] + ang[1] * ang[3]) + m4 * (ang[0] * ang[1] + ang[0] * ang[2] + ang[1] * ang[2]);
-  RA_d = -(m1 * ang[1] * ang[2] * ang[3] + m2 * ang[0] * ang[2] * ang[3] + m3 * ang[0] * ang[1] * ang[3] + m4 * ang[0] * ang[1] * ang[2]);
+  // float ang[4] = {0,20,30,45};
+  // float m1 = ang_0 / ((ang[0] - ang[1]) * (ang[0] - ang[2]) * (ang[0] - ang[3]));
+  // float m2 = ang_20 / ((ang[1] - ang[0]) * (ang[1] - ang[2]) * (ang[1] - ang[3]));
+  // float m3 = ang_30 / ((ang[2] - ang[0]) * (ang[2] - ang[1]) * (ang[2] - ang[3]));
+  // float m4 = ang_45 / ((ang[3] - ang[0]) * (ang[3] - ang[1]) * (ang[3] - ang[2]));
+  // RA_a = m1 + m2 + m3 + m4;
+  // RA_b = -(m1 * (ang[1] + ang[2] + ang[3]) + m2 * (ang[0] + ang[2] + ang[3]) + m3 * (ang[0] + ang[1] + ang[3]) + m4 * (ang[0] + ang[1] + ang[2]));
+  // RA_c = m1 * (ang[1] * ang[2] + ang[1] * ang[3] + ang[2] * ang[3]) + m2 * (ang[0] * ang[2] + ang[0] * ang[3] + ang[2] * ang[3]) + m3 * (ang[0] * ang[1] + ang[0] * ang[3] + ang[1] * ang[3]) + m4 * (ang[0] * ang[1] + ang[0] * ang[2] + ang[1] * ang[2]);
+  // RA_d = -(m1 * ang[1] * ang[2] * ang[3] + m2 * ang[0] * ang[2] * ang[3] + m3 * ang[0] * ang[1] * ang[3] + m4 * ang[0] * ang[1] * ang[2]);
+  Serial.println();
   Serial.print(" RA_a : ");
   Serial.print(RA_a);
   Serial.print(" RA_b : ");
@@ -27,6 +27,12 @@ void Attack::available_set(int *check_val){ //変数を受け取ったり三次�
   Serial.print(RA_c);
   Serial.print(" RA_d : ");
   Serial.print(RA_d);
+  for(int i = 0; i < 6; i++){
+    Serial.print(" ");
+    Serial.print(i);
+    Serial.print(" ");
+    Serial.print(central.Values[i]);
+  }
   Serial.println();
   go_val = central.val_max;
   play_time.reset();
@@ -144,36 +150,32 @@ void Attack::attack(){
     int front_flag = 0;
 
     if(abs(ball.ang) < 10){
-      // go_ang = -0.0015 * pow(abs(ball.ang),3) + 0.090 * pow(abs(ball.ang),2) - 0.20 * abs(ball.ang);
-      go_ang = abs(ball.ang);
+      go_ang = -0.0015 * pow(abs(ball.ang),3) + 0.090 * pow(abs(ball.ang),2) - 0.20 * abs(ball.ang);
       max_val = 240;
       if(abs(ball.ang) < 10){
         max_val = go_val;
       }
     }
-    else if(abs(ball.ang) < 45){
-      go_ang = abs(ball.ang) * (RA_e + 0.25);
+    else if(abs(ball.ang) < 30){
+      go_ang = -0.0015 * pow(abs(ball.ang),3) + 0.090 * pow(abs(ball.ang),2) - 0.20 * abs(ball.ang);
     }
     else if(abs(ball.ang) < 90){
-      go_ang = abs(ball.ang) * RA_e;
+      go_ang = abs(ball.ang) * RA_a;
       max_val = 220;
     }
     else{
-      go_ang = abs(ball.ang) + 50;
+      go_ang = abs(ball.ang) + RA_c;
     }
 
     if(abs(ball.world_far) < 75){
-      if(abs(ball.ang) < 30){
-        go_ang = abs(ball.ang) * RA_e;
-      }
-      else if(abs(ball.ang) < 60){
-        go_ang = abs(ball.ang) * (RA_e + 0.8);
+      if(abs(ball.ang) < 20){
+        go_ang = -0.0015 * pow(abs(ball.ang),3) + 0.090 * pow(abs(ball.ang),2) - 0.20 * abs(ball.ang);
       }
       else if(abs(ball.ang) < 90){
-        go_ang = abs(ball.ang) + 120;
+        go_ang = abs(ball.ang) * RA_b;
       }
       else{
-        go_ang = abs(ball.ang) + 150;
+        go_ang = abs(ball.ang) + RA_d;
       }
     }
 
