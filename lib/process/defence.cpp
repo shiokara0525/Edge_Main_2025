@@ -422,12 +422,12 @@ void Defence::defence(){
         A_15_flag = 7;
         c = 1;
       }
-      else{
-        // if(1000 < Timer.read_ms()){
-        //   A = 15;
-        //   A_15_flag = 8;
-        //   c = 1;
-        // }
+      else if(60 < abs(abs(line.ang_old) - 90)){
+        if(cam_back.on && cam_back.Size < 20){
+          A = 15;
+          A_15_flag = 7;
+          c = 1;
+        }
       }
     }
   }

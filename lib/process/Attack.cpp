@@ -156,7 +156,7 @@ void Attack::attack(){
         max_val = go_val;
       }
     }
-    else if(abs(ball.ang) < 30){
+    else if(abs(ball.ang) < 20){
       go_ang = -0.0015 * pow(abs(ball.ang),3) + 0.090 * pow(abs(ball.ang),2) - 0.20 * abs(ball.ang);
     }
     else if(abs(ball.ang) < 90){
@@ -168,13 +168,7 @@ void Attack::attack(){
     }
 
     if(abs(ball.world_far) < 75){
-      if(abs(ball.ang) < 20){
-        go_ang = -0.0015 * pow(abs(ball.ang),3) + 0.090 * pow(abs(ball.ang),2) - 0.20 * abs(ball.ang);
-      }
-      else if(abs(ball.ang) < 90){
-        go_ang = abs(ball.ang) * RA_b;
-      }
-      else{
+      if(90 < abs(ball.ang)){
         go_ang = abs(ball.ang) + RA_d;
       }
     }
