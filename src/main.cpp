@@ -29,6 +29,9 @@ void setup(){
 
 
 void loop(){
+  Vector2D go_vec(0,0);
+  int M_mode = 0;
+
   central.Main_timer.reset();
   if(2500 < central.Line_period.read_us()){
     line.getLINE_Vec();
@@ -59,6 +62,7 @@ void loop(){
 
     kicker.run(ESP.Kick);
     ESP.Kick = 0;
+    central.Motor_on = 0;
   }
 
   else if(central.Mode == 1){
@@ -69,7 +73,7 @@ void loop(){
       kicker.stop();
     }
 
-    attack.attack();
+    go_vec = attack.attack();
   }
 
   else if(central.Mode == 2){
@@ -136,6 +140,8 @@ void loop(){
     }
     MOTOR.motor_0();
   }
+
+
 }
 
 

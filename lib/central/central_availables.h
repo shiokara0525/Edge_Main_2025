@@ -17,6 +17,7 @@ public:
   float AC_value;
   float Kick_on;
   int AC_flag;
+  int Motor_on;     //0　モーターなし 1 普通に動かす 2 姿勢制御だけ
 
   int Values[6];    //ESPから送られてくる変数
 

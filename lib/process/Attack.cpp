@@ -503,85 +503,24 @@ Vector2D Attack::attack(){
     }
   }
 
-  int go_front_flag = 0;
-  if(A == 10 || A == 11){
-    if(abs(go_ang.degree) < 30){
-      go_front_flag = 1;
-    }
-    else if(40 < abs(go_ang.degree) && abs(go_ang.degree) < 120){
-      go_front_flag = 2;
-    }
-  }
-  go_front.enterState(go_front_flag);
-  if(200 < go_front.readStateTimer(1)){
-    if(500 < go_front.readStateTimer(1)){
-      max_val -= 30;
-    }
-    if(A == 10 && 600 < Timer.read_ms()){
-      max_val -= 10;
-    }
-  }
-  else if(400 < go_front.readStateTimer(2)){
-    // max_val = 150;
-  }
 
-  // rake.enterState(rake_flag);
-  // if(rake.readStateTimer(0) < 500 && 1000 < play_time.read_ms() && A == 11){
-  //   target += 60;
-  // }
   ac.dir_target = target;
   if(AC_flag == 0 || rake_flag){
     AC_val = ac.getAC_val();
   }
   else if(AC_flag == 1){
     AC_val = ac.getCam_val(-cam_front.ang) * AC_D;
-    // Serial.print(" AC_val : ");
-    // Serial.print(AC_val);
-    // Serial.println();
+  }
+
+  if(back_flag){
+    max_val = go_val_back;
   }
 
   central.Kick_on = kick_;
   central.AC_value = AC_val;
-  // Serial.print(" A : ");
-  // Serial.print(A);
-  // ac.print();
-  // Serial.print(" maxval : ");
-  // Serial.print(max_val);
-  // Serial.print(" AC_flag : ");
-  // Serial.print(AC_flag);
-  // Serial.print(" AC_val : ");
-  // Serial.print(AC_val);
-  // cam_front.print();
-  // Serial.print(" | ");
-  // Serial.print(" rake : ");
-  // Serial.print(rake_flag);
-  // Serial.print(" max_val : ");
-  // Serial.print(max_val);
-  // Serial.print(" setplay : ");
-  // Serial.print(setplay_flag);
-  // Serial.print(" first_dir : ");
-  // Serial.print(first_ang);
-  Serial.print(" go_ang : ");
-  Serial.print(go_ang.degree);
-  // Serial.println();
+  central.go_vector.set_polar(go_ang.degree,max_val);
+  central.Motor_on = M_flag;
 
-  if(back_flag == 1){
-    max_val = go_val_back;
-  }
+  return central.go_vector;
 
-  if(M_flag == 1){
-    if(AC_flag == 1){
-      MOTOR.moveMotor_0(go_ang,max_val,AC_val,1);
-    }
-    else{
-      MOTOR.moveMotor_0(go_ang,max_val,AC_val,0);
-    }
-  }
-  else if(M_flag == 0){
-    MOTOR.motor_0();
-  }
-
-  if(MOTOR.NoneM_flag){
-    // OLED_moving();
-  }
 }
