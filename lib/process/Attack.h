@@ -57,7 +57,7 @@ class Attack{
 
         MA goang_ma;
     public:
-        Vector2D attack();
+        void attack();
         void available_set(int*);
         byte* getCheckval();
         int check_val[6];

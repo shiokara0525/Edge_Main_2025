@@ -28,7 +28,7 @@ void Attack::available_set(int *check_val){ //変数を受け取ったり三次�
   Serial.print(" RA_d : ");
   Serial.print(RA_d);
   Serial.println();
-  go_val = central.val_max;
+  go_val = central.return_Motor_value();
   play_time.reset();
   first_ang = ac.dir_n;
   goang_ma.setLenth(100);
@@ -51,7 +51,7 @@ byte* Attack::getCheckval(){
 
 
 
-Vector2D Attack::attack(){
+void Attack::attack(){
   angle go_ang(ball.ang,true);         //進む角度のオブジェクト
 
   float AC_val = 100;                  //姿勢制御の出力
@@ -516,11 +516,8 @@ Vector2D Attack::attack(){
     max_val = go_val_back;
   }
 
-  central.Kick_on = kick_;
-  central.AC_value = AC_val;
-  central.go_vector.set_polar(go_ang.degree,max_val);
-  central.Motor_on = M_flag;
+  Vector2D go_vec;
+  go_vec.set_polar(go_ang.degree,max_val);
 
-  return central.go_vector;
-
+  central.set_states(go_vec,max_val,M_flag,AC_val,AC_flag,kick_);
 }

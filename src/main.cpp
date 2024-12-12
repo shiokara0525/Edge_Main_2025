@@ -30,7 +30,7 @@ void setup(){
 
 void loop(){
   Vector2D go_vec(0,0);
-  int M_mode = 0;
+  int set_status_flag = 0;
 
   central.Main_timer.reset();
   if(2500 < central.Line_period.read_us()){
@@ -60,9 +60,9 @@ void loop(){
       Serial8.write(37);
     }
 
-    kicker.run(ESP.Kick);
+    central.set_states(go_vec,0,MOTOR_STOP,0,AC_ALL,ESP.Kick);
     ESP.Kick = 0;
-    central.Motor_on = 0;
+    set_status_flag = 1;
   }
 
   else if(central.Mode == 1){
@@ -73,7 +73,8 @@ void loop(){
       kicker.stop();
     }
 
-    go_vec = attack.attack();
+    attack.attack();
+    set_status_flag = 1;
   }
 
   else if(central.Mode == 2){
@@ -84,7 +85,8 @@ void loop(){
       kicker.stop();
     }
 
-    defence.defence();
+    go_vec = defence.defence();
+    set_status_flag = 1;
   }
 
   else if(central.Mode == 3){
@@ -101,19 +103,16 @@ void loop(){
     if(central.test_mode == 0){
       angle ang(0,true);
       float AC_val = ac.getAC_val();
-      MOTOR.moveMotor_0(ang,central.val_max,AC_val,0);
+      central.set_states(go_vec,AC_val,MOTOR_AC_ONLY,AC_val,AC_ALL,KICK_OFF);
+      set_status_flag = 1;
     }
     else if(central.test_mode == 1){
-      for(int i = 0; i < 4; i++){
-        MOTOR.Moutput(i,255);
-        delay(500);
-        MOTOR.Moutput(i,0);
-        delay(100);
-      }
+      //後で書く！！
     }
     else if(central.test_mode == 3){
       float AC_val = ac.getAC_val();
-      MOTOR.motor_ac(AC_val);
+      central.set_states(go_vec,AC_val,MOTOR_AC_ONLY,AC_val,AC_ALL,KICK_OFF);
+      set_status_flag = 1;
     }
     else if(central.test_mode == 4){
       MOTOR.motor_0();
@@ -121,6 +120,7 @@ void loop(){
     }
     else if(central.test_mode == 5){
       ESP.PS4.run();
+      set_status_flag = 1;
     }
   }
 
@@ -130,6 +130,8 @@ void loop(){
       kicker.stop();
       MOTOR.motor_0();
     }
+
+    central.set_states(go_vec,0,MOTOR_STOP,0,AC_ALL,0);
   }
 
   else if(central.Mode == 99){
@@ -138,10 +140,11 @@ void loop(){
       kicker.stop();
 
     }
-    MOTOR.motor_0();
+    central.set_states(go_vec,0,MOTOR_STOP,0,AC_ALL,0);
   }
 
-
+  MOTOR.moveMotor(central.return_go_vector(),central.return_Motor_value(),central.return_AC_value(),central.return_AC_flag());
+  kicker.run(central.return_Kick_on());
 }
 
 
