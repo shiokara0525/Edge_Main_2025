@@ -53,7 +53,7 @@ class Defence{
         byte return_num[4];
         timer Mode_timer;
     public:
-        void defence();
+        Vector2D defence();
         void available_set();
         int get_A();
         byte* get_flag();

@@ -3,6 +3,7 @@
 #include<Sup.h>
 #include<input.h>
 #include<output.h>
+#include<central_availables.h>
 
 class PS4_control{
 public:

@@ -220,7 +220,11 @@ void ESP_communicate::read_from_ESP(byte (&data)[2],int label){
     }
   }
   else if(label == 3){
-    central.val_max = data_int;
+    Vector2D go_vec(0,0);
+    Serial.print(" MOTOR : ");
+    Serial.print(data_int);
+    Serial.println();
+    central.set_Motor_max(data_int);
   }
   else if(label == 4){
     central.color = data_int;

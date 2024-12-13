@@ -1,7 +1,7 @@
 #include<defence.h>
 
 void Defence::available_set(){
-  go_val = central.val_max;
+  go_val = central.return_Motor_max();
   A = 0;
   c = 0;
   Mode_timer.reset();
@@ -19,12 +19,14 @@ byte* Defence::get_flag(){
   return return_num;
 }
 
-void Defence::defence(){
+Vector2D Defence::defence(){
   angle go_ang(ball.ang,true);         //進む角度のオブジェクト
 
   float AC_val = 100;                  //姿勢制御の出力
   int max_val = go_val;                //進む出力
   float target = central.ac_tirget;           //目標角度
+
+  float line_val = 1.0;
 
   int AC_flag = 0;                     //0だったら絶対的な角度とる 1だったらゴール向く
   int kick_ = 0;                       //0だったらキックしない 1だったらキック
@@ -124,11 +126,11 @@ void Defence::defence(){
       M_flag = 3;
     }
     else if(115 < abs(go_ang.degree)){
-      MOTOR.line_val = 1.5;
+      line_val = 1.5;
       max_val -= 60;
     }
     else if(abs(go_ang.degree) < 60){  //前めに進むとき
-      MOTOR.line_val = 2;
+      line_val = 2.0;
       max_val -= 60;
       if(cam_back.on && cam_back.Size < 20){
         Lside_A = 1;
@@ -138,7 +140,7 @@ void Defence::defence(){
       }
     }
     else{                              //横に進むとき
-      MOTOR.line_val = 1.0;
+      line_val = 1.0;
       if(go_ang.degree < 0){
         gotoSide_flag = 1;
       }
@@ -478,23 +480,21 @@ void Defence::defence(){
   Serial.print(" max_val : ");
   Serial.println(max_val);
 
+  Vector2D go_vec;
+  go_vec.set_polar(go_ang.degree,1.0);
 
   if(M_flag == 1){
-    MOTOR.moveMotor_L(go_ang,max_val,AC_val,line.vec);
+    go_vec = go_vec + line_val * line.vec;
   }
-  else if(M_flag == 0){
-    MOTOR.motor_ac(AC_val);
-  }
-  else if(M_flag == 2){
-    if(AC_flag){
-      MOTOR.moveMotor_0(go_ang,max_val,AC_val,1);
-      // cam_front.print();
-    }
-    else{
-      MOTOR.moveMotor_0(go_ang,max_val,AC_val,0);
-    }
+
+  if(M_flag == 1 || M_flag == 2){
+    M_flag = 1;
   }
   else if(M_flag == 3){
-    MOTOR.motor_0();
+    M_flag = 2;
   }
+
+  central.set_states(go_vec,max_val,M_flag,AC_val,AC_flag,kick_);
+
+  return go_vec;
 }

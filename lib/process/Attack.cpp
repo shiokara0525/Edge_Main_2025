@@ -34,7 +34,7 @@ void Attack::available_set(int *check_val){ //変数を受け取ったり三次�
     Serial.print(central.Values[i]);
   }
   Serial.println();
-  go_val = central.val_max;
+  go_val = central.return_Motor_max();
   play_time.reset();
   first_ang = ac.dir_n;
   goang_ma.setLenth(100);
@@ -62,6 +62,8 @@ void Attack::attack(){
 
   float AC_val = 100;                  //姿勢制御の出力
   int max_val = go_val;                //進む出力
+  Serial.print(" go_val : ");
+  Serial.print(go_val);
   float target = central.ac_tirget;           //目標角度
 
 
@@ -499,84 +501,24 @@ void Attack::attack(){
     }
   }
 
-  int go_front_flag = 0;
-  if(A == 10 || A == 11){
-    if(abs(go_ang.degree) < 30){
-      go_front_flag = 1;
-    }
-    else if(40 < abs(go_ang.degree) && abs(go_ang.degree) < 120){
-      go_front_flag = 2;
-    }
-  }
-  go_front.enterState(go_front_flag);
-  if(200 < go_front.readStateTimer(1)){
-    if(500 < go_front.readStateTimer(1)){
-      max_val -= 30;
-    }
-    if(A == 10 && 600 < Timer.read_ms()){
-      max_val -= 10;
-    }
-  }
-  else if(400 < go_front.readStateTimer(2)){
-    // max_val = 150;
-  }
 
-  // rake.enterState(rake_flag);
-  // if(rake.readStateTimer(0) < 500 && 1000 < play_time.read_ms() && A == 11){
-  //   target += 60;
-  // }
   ac.dir_target = target;
   if(AC_flag == 0 || rake_flag){
     AC_val = ac.getAC_val();
   }
   else if(AC_flag == 1){
     AC_val = ac.getCam_val(-cam_front.ang) * AC_D;
-    // Serial.print(" AC_val : ");
-    // Serial.print(AC_val);
-    // Serial.println();
   }
 
-  kicker.run(kick_);
-  // Serial.print(" A : ");
-  // Serial.print(A);
-  // ac.print();
-  // Serial.print(" maxval : ");
-  // Serial.print(max_val);
-  // Serial.print(" AC_flag : ");
-  // Serial.print(AC_flag);
-  // Serial.print(" AC_val : ");
-  // Serial.print(AC_val);
-  // cam_front.print();
-  // Serial.print(" | ");
-  // Serial.print(" rake : ");
-  // Serial.print(rake_flag);
-  // Serial.print(" max_val : ");
-  // Serial.print(max_val);
-  // Serial.print(" setplay : ");
-  // Serial.print(setplay_flag);
-  // Serial.print(" first_dir : ");
-  // Serial.print(first_ang);
-  Serial.print(" go_ang : ");
-  Serial.print(go_ang.degree);
-  // Serial.println();
-
-  if(back_flag == 1){
+  if(back_flag){
     max_val = go_val_back;
   }
 
-  if(M_flag == 1){
-    if(AC_flag == 1){
-      MOTOR.moveMotor_0(go_ang,max_val,AC_val,1);
-    }
-    else{
-      MOTOR.moveMotor_0(go_ang,max_val,AC_val,0);
-    }
-  }
-  else if(M_flag == 0){
-    MOTOR.motor_0();
-  }
+  Vector2D go_vec;
+  go_vec.set_polar(go_ang.degree,max_val);
+  Serial.print(" go_val : ");
+  Serial.print(go_val);
+  Serial.println();
 
-  if(MOTOR.NoneM_flag){
-    // OLED_moving();
-  }
+  central.set_states(go_vec,max_val,M_flag,AC_val,AC_flag,kick_);
 }
