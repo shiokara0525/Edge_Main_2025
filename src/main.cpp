@@ -7,7 +7,7 @@
 #include"Sup.h"
 
 
-timer Ball_period;
+timer Ball_period;  //ボール
 timer Line_period;
 
 timer Main_timer;
