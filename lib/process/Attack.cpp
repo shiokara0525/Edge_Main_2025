@@ -151,25 +151,23 @@ void Attack::attack(){
     // float confidencial_num = (ball.vec.return_magnitude() - BALL_MAX_NUM * 0.8) * 0.025;
     int front_flag = 0;
 
-    if(abs(ball.ang) < 10){
-      go_ang = -0.0015 * pow(abs(ball.ang),3) + 0.090 * pow(abs(ball.ang),2) - 0.20 * abs(ball.ang);
-      max_val = 240;
-      if(abs(ball.ang) < 10){
-        max_val = go_val;
+    if(abs(ball.world_far) < 75){
+      if(abs(ball.ang) < 20){
+        go_ang = -0.0015 * pow(abs(ball.ang),3) + 0.090 * pow(abs(ball.ang),2) - 0.20 * abs(ball.ang);
+        max_val = 240;
+        if(abs(ball.ang) < 10){
+          max_val = go_val;
+        }
+      }
+      else if(abs(ball.ang) < 90){
+        go_ang = abs(ball.ang) * RA_a;
+        max_val = 220;
+      }
+      else{
+        go_ang = abs(ball.ang) + RA_c;
       }
     }
-    else if(abs(ball.ang) < 20){
-      go_ang = -0.0015 * pow(abs(ball.ang),3) + 0.090 * pow(abs(ball.ang),2) - 0.20 * abs(ball.ang);
-    }
-    else if(abs(ball.ang) < 90){
-      go_ang = abs(ball.ang) * RA_a;
-      max_val = 220;
-    }
     else{
-      go_ang = abs(ball.ang) + RA_c;
-    }
-
-    if(abs(ball.world_far) < 75){
       if(90 < abs(ball.ang)){
         go_ang = abs(ball.ang) + RA_d;
       }
