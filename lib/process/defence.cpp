@@ -1,7 +1,7 @@
 #include<defence.h>
 
 void Defence::available_set(){
-  go_val = central.return_Motor_value();
+  go_val = central.return_Motor_max();
   A = 0;
   c = 0;
   Mode_timer.reset();
