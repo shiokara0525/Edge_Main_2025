@@ -41,6 +41,7 @@ public:
 
   timer ball_Get;   //ボールの情報が送られてくる周期を測るタイマー
   timer line_Get;   //ラインの情報が送られてくる周期を測るタイマー
+  void reset();
 
   void set_states(Vector2D go_vec,int motor_value,int motor_on,int AC_value,int AC_flag,int Kick_on);  //状態設定するやつ
   void set_states_no_output();
@@ -55,6 +56,7 @@ public:
   int return_Kick_on();
   Vector2D return_go_vector();
   int return_Motor_max();
+  int return_is_set();
 private:
 
   Vector2D go_vector;
@@ -66,6 +68,8 @@ private:
   int Motor_value = 200;//モーターの出力
 
   int Motor_max_value = 200;
+
+  int is_set;
 };
 
 extern central_availables central;

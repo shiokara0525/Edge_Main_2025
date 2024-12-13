@@ -32,7 +32,7 @@ void setup(){
 
 void loop(){
   Vector2D go_vec(0,0);
-  int set_status_flag = 0;
+  central.reset();
 
   central.Main_timer.reset();
   if(2500 < central.Line_period.read_us()){
@@ -64,7 +64,6 @@ void loop(){
 
     central.set_states(go_vec,0,MOTOR_STOP,0,AC_ALL,ESP.Kick);
     ESP.Kick = 0;
-    set_status_flag = 1;
   }
 
   else if(central.Mode == 1){
@@ -76,7 +75,6 @@ void loop(){
     }
 
     attack.attack();
-    set_status_flag = 1;
   }
 
   else if(central.Mode == 2){
@@ -88,7 +86,6 @@ void loop(){
     }
 
     go_vec = defence.defence();
-    set_status_flag = 1;
   }
 
   else if(central.Mode == 3){
@@ -107,32 +104,30 @@ void loop(){
       go_vec.set_polar(ball.ang,1.0);
       float AC_val = ac.getAC_val();
       central.set_states(go_vec,200,MOTOR_ON,AC_val,AC_ALL,0);
-      set_status_flag = 1;
     }
     else if(central.test_mode == 1){
-      // int TIME = MOTOR_time.read_ms();
+      int TIME = MOTOR_time.read_ms();
       Serial.print(" MOTOR ");
-      // Serial.print(TIME);
+      Serial.print(TIME);
       Serial.println();
 
-      // for(int i = 0; i < 4; i++){
-      //   if(TIME < 100){
-      //     central.set_states_no_output();
-      //     break;
-      //   }
-      //   else if(TIME < 500){
-      //     central.set_states_MOTOR_test(i);
-      //     break;
-      //   }
-      //   else{
-      //     TIME -= 500;
-      //   }
-      // }
+      for(int i = 0; i < 4; i++){
+        if(TIME < 100){
+          central.set_states_no_output();
+          break;
+        }
+        else if(TIME < 500){
+          central.set_states_MOTOR_test(i);
+          break;
+        }
+        else{
+          TIME -= 500;
+        }
+      }
     }
     else if(central.test_mode == 3){
       float AC_val = ac.getAC_val();
       central.set_states_onlyAC(AC_val);
-      set_status_flag = 1;
     }
     else if(central.test_mode == 4){
       MOTOR.motor_0();
@@ -141,7 +136,6 @@ void loop(){
     }
     else if(central.test_mode == 5){
       ESP.PS4.run();
-      set_status_flag = 1;
     }
   }
 
@@ -153,7 +147,6 @@ void loop(){
     }
 
     central.set_states_no_output();
-    set_status_flag = 1;
   }
 
   else if(central.Mode == 99){
@@ -163,10 +156,9 @@ void loop(){
 
     }
     central.set_states_no_output();
-    set_status_flag = 1;
   }
 
-  if(set_status_flag == 1){
+  if(central.return_is_set() == 1){
     if(central.return_Motor_on() == MOTOR_STOP){
       MOTOR.motor_0();
     }

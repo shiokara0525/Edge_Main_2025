@@ -2,6 +2,10 @@
 
 central_availables central;
 
+void central_availables::reset(){
+    is_set = 0;
+}
+
 void central_availables::set_states(Vector2D go_vec_,int motor_value_,int motor_on_,int AC_value_,int AC_flag_,int Kick_on_){
     go_vector = go_vec_.normalize();
     Motor_value = motor_value_;
@@ -9,6 +13,8 @@ void central_availables::set_states(Vector2D go_vec_,int motor_value_,int motor_
     AC_value = AC_value_;
     AC_flag = AC_flag_;
     Kick_on = Kick_on_;
+
+    is_set = 1;
 }
 
 void central_availables::set_states_no_output(){
@@ -18,6 +24,8 @@ void central_availables::set_states_no_output(){
     AC_value = 0;
     AC_flag = AC_ALL;
     Kick_on = KICK_OFF;
+
+    is_set = 1;
 }
 
 
@@ -28,6 +36,8 @@ void central_availables::set_states_onlyAC(int AC_val){
     AC_value = AC_val;
     AC_flag = AC_ALL;
     Kick_on = KICK_OFF;
+
+    is_set = 1;
 }
 
 
@@ -51,11 +61,15 @@ void central_availables::set_states_MOTOR_test(int motor_on){
     AC_value = 0;
     AC_flag = AC_ALL;
     Kick_on = KICK_OFF;
+
+    is_set = 1;
 }
 
 
 void central_availables::set_Motor_max(int Motor_max_){
     Motor_max_value = Motor_max_;
+
+    is_set = 1;
 }
 
 
@@ -87,4 +101,8 @@ int central_availables::return_Motor_value(){
 
 int central_availables::return_Kick_on(){
     return Kick_on;
+}
+
+int central_availables::return_is_set(){
+    return is_set;
 }
