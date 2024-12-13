@@ -2,10 +2,9 @@
 
 #define DELTA_T 0.025
 #define BALL_MAX_NUM 100
-#include <Arduino.h>
-#include<MA.h>
-#include<myVector.h>
-#include<state.h>
+#include<Arduino.h>
+#include<Sup.h>
+
 
 class BALL{
     public:

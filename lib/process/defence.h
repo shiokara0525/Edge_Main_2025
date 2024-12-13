@@ -5,10 +5,8 @@
 #include<output.h>
 #include<timer.h>
 #include<Sup.h>
+#include<central_availables.h>
 
-extern int ac_tirget;
-extern int color;
-extern int val_max;
 
 class Defence{
     private:
@@ -55,7 +53,7 @@ class Defence{
         byte return_num[4];
         timer Mode_timer;
     public:
-        void defence();
+        Vector2D defence();
         void available_set();
         int get_A();
         byte* get_flag();

@@ -2,23 +2,23 @@
 
 
 void Attack::available_set(int *check_val){ //変数を受け取ったり三次関数を求める関数
-  ang_0 = Values[0];
-  ang_20 = Values[1];
-  ang_30 = Values[2];
-  ang_45 = Values[3];
-  AC_D = Values[4] / 100.0;
-  RA_e = Values[5] / 100.0;
+  RA_a = central.Values[0] / 100.0;
+  RA_b = central.Values[1] / 100.0;
+  RA_c = central.Values[2];
+  RA_d = central.Values[3];
+  AC_D = central.Values[4] / 100.0;
   A = 0;
   c = 0;
-  float ang[4] = {0,20,30,45};
-  float m1 = ang_0 / ((ang[0] - ang[1]) * (ang[0] - ang[2]) * (ang[0] - ang[3]));
-  float m2 = ang_20 / ((ang[1] - ang[0]) * (ang[1] - ang[2]) * (ang[1] - ang[3]));
-  float m3 = ang_30 / ((ang[2] - ang[0]) * (ang[2] - ang[1]) * (ang[2] - ang[3]));
-  float m4 = ang_45 / ((ang[3] - ang[0]) * (ang[3] - ang[1]) * (ang[3] - ang[2]));
-  RA_a = m1 + m2 + m3 + m4;
-  RA_b = -(m1 * (ang[1] + ang[2] + ang[3]) + m2 * (ang[0] + ang[2] + ang[3]) + m3 * (ang[0] + ang[1] + ang[3]) + m4 * (ang[0] + ang[1] + ang[2]));
-  RA_c = m1 * (ang[1] * ang[2] + ang[1] * ang[3] + ang[2] * ang[3]) + m2 * (ang[0] * ang[2] + ang[0] * ang[3] + ang[2] * ang[3]) + m3 * (ang[0] * ang[1] + ang[0] * ang[3] + ang[1] * ang[3]) + m4 * (ang[0] * ang[1] + ang[0] * ang[2] + ang[1] * ang[2]);
-  RA_d = -(m1 * ang[1] * ang[2] * ang[3] + m2 * ang[0] * ang[2] * ang[3] + m3 * ang[0] * ang[1] * ang[3] + m4 * ang[0] * ang[1] * ang[2]);
+  // float ang[4] = {0,20,30,45};
+  // float m1 = ang_0 / ((ang[0] - ang[1]) * (ang[0] - ang[2]) * (ang[0] - ang[3]));
+  // float m2 = ang_20 / ((ang[1] - ang[0]) * (ang[1] - ang[2]) * (ang[1] - ang[3]));
+  // float m3 = ang_30 / ((ang[2] - ang[0]) * (ang[2] - ang[1]) * (ang[2] - ang[3]));
+  // float m4 = ang_45 / ((ang[3] - ang[0]) * (ang[3] - ang[1]) * (ang[3] - ang[2]));
+  // RA_a = m1 + m2 + m3 + m4;
+  // RA_b = -(m1 * (ang[1] + ang[2] + ang[3]) + m2 * (ang[0] + ang[2] + ang[3]) + m3 * (ang[0] + ang[1] + ang[3]) + m4 * (ang[0] + ang[1] + ang[2]));
+  // RA_c = m1 * (ang[1] * ang[2] + ang[1] * ang[3] + ang[2] * ang[3]) + m2 * (ang[0] * ang[2] + ang[0] * ang[3] + ang[2] * ang[3]) + m3 * (ang[0] * ang[1] + ang[0] * ang[3] + ang[1] * ang[3]) + m4 * (ang[0] * ang[1] + ang[0] * ang[2] + ang[1] * ang[2]);
+  // RA_d = -(m1 * ang[1] * ang[2] * ang[3] + m2 * ang[0] * ang[2] * ang[3] + m3 * ang[0] * ang[1] * ang[3] + m4 * ang[0] * ang[1] * ang[2]);
+  Serial.println();
   Serial.print(" RA_a : ");
   Serial.print(RA_a);
   Serial.print(" RA_b : ");
@@ -27,8 +27,14 @@ void Attack::available_set(int *check_val){ //変数を受け取ったり三次�
   Serial.print(RA_c);
   Serial.print(" RA_d : ");
   Serial.print(RA_d);
+  for(int i = 0; i < 6; i++){
+    Serial.print(" ");
+    Serial.print(i);
+    Serial.print(" ");
+    Serial.print(central.Values[i]);
+  }
   Serial.println();
-  go_val = val_max;
+  go_val = central.return_Motor_max();
   play_time.reset();
   first_ang = ac.dir_n;
   goang_ma.setLenth(100);
@@ -56,7 +62,9 @@ void Attack::attack(){
 
   float AC_val = 100;                  //姿勢制御の出力
   int max_val = go_val;                //進む出力
-  float target = ac_tirget;           //目標角度
+  Serial.print(" go_val : ");
+  Serial.print(go_val);
+  float target = central.ac_tirget;           //目標角度
 
 
   int AC_flag = 0;                     //0だったら絶対的な角度とる 1だったらゴール向く
@@ -144,36 +152,26 @@ void Attack::attack(){
     int front_flag = 0;
 
     if(abs(ball.ang) < 10){
-      // go_ang = -0.0015 * pow(abs(ball.ang),3) + 0.090 * pow(abs(ball.ang),2) - 0.20 * abs(ball.ang);
-      go_ang = abs(ball.ang);
+      go_ang = -0.0015 * pow(abs(ball.ang),3) + 0.090 * pow(abs(ball.ang),2) - 0.20 * abs(ball.ang);
       max_val = 240;
       if(abs(ball.ang) < 10){
         max_val = go_val;
       }
     }
-    else if(abs(ball.ang) < 45){
-      go_ang = abs(ball.ang) * (RA_e + 0.25);
+    else if(abs(ball.ang) < 20){
+      go_ang = -0.0015 * pow(abs(ball.ang),3) + 0.090 * pow(abs(ball.ang),2) - 0.20 * abs(ball.ang);
     }
     else if(abs(ball.ang) < 90){
-      go_ang = abs(ball.ang) * RA_e;
+      go_ang = abs(ball.ang) * RA_a;
       max_val = 220;
     }
     else{
-      go_ang = abs(ball.ang) + 50;
+      go_ang = abs(ball.ang) + RA_c;
     }
 
     if(abs(ball.world_far) < 75){
-      if(abs(ball.ang) < 30){
-        go_ang = abs(ball.ang) * RA_e;
-      }
-      else if(abs(ball.ang) < 60){
-        go_ang = abs(ball.ang) * (RA_e + 0.8);
-      }
-      else if(abs(ball.ang) < 90){
-        go_ang = abs(ball.ang) + 120;
-      }
-      else{
-        go_ang = abs(ball.ang) + 150;
+      if(90 < abs(ball.ang)){
+        go_ang = abs(ball.ang) + RA_d;
       }
     }
 
@@ -503,84 +501,24 @@ void Attack::attack(){
     }
   }
 
-  int go_front_flag = 0;
-  if(A == 10 || A == 11){
-    if(abs(go_ang.degree) < 30){
-      go_front_flag = 1;
-    }
-    else if(40 < abs(go_ang.degree) && abs(go_ang.degree) < 120){
-      go_front_flag = 2;
-    }
-  }
-  go_front.enterState(go_front_flag);
-  if(200 < go_front.readStateTimer(1)){
-    if(500 < go_front.readStateTimer(1)){
-      max_val -= 30;
-    }
-    if(A == 10 && 600 < Timer.read_ms()){
-      max_val -= 10;
-    }
-  }
-  else if(400 < go_front.readStateTimer(2)){
-    // max_val = 150;
-  }
 
-  // rake.enterState(rake_flag);
-  // if(rake.readStateTimer(0) < 500 && 1000 < play_time.read_ms() && A == 11){
-  //   target += 60;
-  // }
   ac.dir_target = target;
   if(AC_flag == 0 || rake_flag){
     AC_val = ac.getAC_val();
   }
   else if(AC_flag == 1){
     AC_val = ac.getCam_val(-cam_front.ang) * AC_D;
-    // Serial.print(" AC_val : ");
-    // Serial.print(AC_val);
-    // Serial.println();
   }
 
-  kicker.run(kick_);
-  // Serial.print(" A : ");
-  // Serial.print(A);
-  // ac.print();
-  // Serial.print(" maxval : ");
-  // Serial.print(max_val);
-  // Serial.print(" AC_flag : ");
-  // Serial.print(AC_flag);
-  // Serial.print(" AC_val : ");
-  // Serial.print(AC_val);
-  // cam_front.print();
-  // Serial.print(" | ");
-  // Serial.print(" rake : ");
-  // Serial.print(rake_flag);
-  // Serial.print(" max_val : ");
-  // Serial.print(max_val);
-  // Serial.print(" setplay : ");
-  // Serial.print(setplay_flag);
-  // Serial.print(" first_dir : ");
-  // Serial.print(first_ang);
-  Serial.print(" go_ang : ");
-  Serial.print(go_ang.degree);
-  // Serial.println();
-
-  if(back_flag == 1){
+  if(back_flag){
     max_val = go_val_back;
   }
 
-  if(M_flag == 1){
-    if(AC_flag == 1){
-      MOTOR.moveMotor_0(go_ang,max_val,AC_val,1);
-    }
-    else{
-      MOTOR.moveMotor_0(go_ang,max_val,AC_val,0);
-    }
-  }
-  else if(M_flag == 0){
-    MOTOR.motor_0();
-  }
+  Vector2D go_vec;
+  go_vec.set_polar(go_ang.degree,max_val);
+  Serial.print(" go_val : ");
+  Serial.print(go_val);
+  Serial.println();
 
-  if(MOTOR.NoneM_flag){
-    // OLED_moving();
-  }
+  central.set_states(go_vec,max_val,M_flag,AC_val,AC_flag,kick_);
 }

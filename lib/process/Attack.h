@@ -3,13 +3,7 @@
 #include<Arduino.h>
 #include<output.h>
 #include<input.h>
-
-
-
-extern int ac_tirget;
-extern int color;
-extern int val_max;
-extern int Values[];
+#include<central_availables.h>
 
 class Attack{
     private:
