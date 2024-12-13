@@ -92,11 +92,11 @@ Vector2D Defence::defence(){
     angle balldir(ball.ang,true);  //ボールの角度を入れるオブジェクト
     Lside_A = 0;
 
-    if(2 < line.num){
+    if(2 < line.num){  //ラインが3点以上で交わってたら例外的にする
       line.ang = 90;
     }
 
-    if(line.ang < 0){
+    if(line.ang < 0){  //ボーダーは-180~180であってほしいよね
       go_border[0] = line.ang;
       go_border[1] = line.ang + 180;
     }
