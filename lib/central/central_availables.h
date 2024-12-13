@@ -19,7 +19,7 @@
 
 
 
-class central_aveilables{
+class central_availables{
 public:
   State main_mode;  //モードの状態変数（予定）
   int Mode;         //モードの状態変数
@@ -57,7 +57,7 @@ private:
   float Kick_on;
   int AC_flag;
   int Motor_on;     //0　モーターなし 1 普通に動かす 2 姿勢制御だけ
-  int val_max = 200;//モーターの出力
+  int Motor_value = 200;//モーターの出力
 };
 
-extern central_aveilables central;
+extern central_availables central;
