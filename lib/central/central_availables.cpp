@@ -11,6 +11,16 @@ void central_availables::set_states(Vector2D go_vec_,int motor_value_,int motor_
     Kick_on = Kick_on_;
 }
 
+void central_availables::set_Motor_max(int Motor_max_){
+    Motor_max_value = Motor_max_;
+}
+
+
+int central_availables::return_Motor_max(){
+    return Motor_max_value;
+}
+
+
 Vector2D central_availables::return_go_vector(){
     return go_vector;
 }

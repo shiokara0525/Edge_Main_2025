@@ -43,12 +43,15 @@ public:
   timer line_Get;   //ラインの情報が送られてくる周期を測るタイマー
 
   void set_states(Vector2D go_vec,int motor_value,int motor_on,int AC_value,int AC_flag,int Kick_on);  //状態設定するやつ
+  void set_Motor_max(int Motor_max_);
+
   int return_AC_value();
   int return_AC_flag();
   int return_Motor_on();
   int return_Motor_value();
   int return_Kick_on();
   Vector2D return_go_vector();
+  int return_Motor_max();
 private:
 
   Vector2D go_vector;
@@ -58,6 +61,8 @@ private:
   int AC_flag;
   int Motor_on;     //0　モーターなし 1 普通に動かす 2 姿勢制御だけ
   int Motor_value = 200;//モーターの出力
+
+  int Motor_max_value = 200;
 };
 
 extern central_availables central;

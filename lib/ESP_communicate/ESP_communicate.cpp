@@ -221,6 +221,9 @@ void ESP_communicate::read_from_ESP(byte (&data)[2],int label){
   }
   else if(label == 3){
     Vector2D go_vec(0,0);
+    Serial.print(" MOTOR : ");
+    Serial.print(data_int);
+    Serial.println();
     central.set_states(go_vec,data_int,MOTOR_STOP,0,0,0);
   }
   else if(label == 4){

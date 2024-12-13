@@ -28,7 +28,7 @@ void Attack::available_set(int *check_val){ //変数を受け取ったり三次�
   Serial.print(" RA_d : ");
   Serial.print(RA_d);
   Serial.println();
-  go_val = central.return_Motor_value();
+  go_val = central.return_Motor_max();
   play_time.reset();
   first_ang = ac.dir_n;
   goang_ma.setLenth(100);
@@ -56,6 +56,8 @@ void Attack::attack(){
 
   float AC_val = 100;                  //姿勢制御の出力
   int max_val = go_val;                //進む出力
+  Serial.print(" go_val : ");
+  Serial.print(go_val);
   float target = central.ac_tirget;           //目標角度
 
 
@@ -518,6 +520,9 @@ void Attack::attack(){
 
   Vector2D go_vec;
   go_vec.set_polar(go_ang.degree,max_val);
+  Serial.print(" go_val : ");
+  Serial.print(go_val);
+  Serial.println();
 
   central.set_states(go_vec,max_val,M_flag,AC_val,AC_flag,kick_);
 }
