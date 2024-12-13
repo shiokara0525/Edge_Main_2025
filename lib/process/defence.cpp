@@ -480,6 +480,13 @@ Vector2D Defence::defence(){
   Serial.print(" max_val : ");
   Serial.println(max_val);
 
+  Vector2D go_vec;
+  go_vec.set_polar(go_ang.degree,1.0);
+
+  if(M_flag == 1){
+    go_vec = go_vec + line_val * line.vec;
+  }
+
   if(M_flag == 1 || M_flag == 2){
     M_flag = 1;
   }
@@ -487,12 +494,7 @@ Vector2D Defence::defence(){
     M_flag = 2;
   }
 
-  Vector2D go_vec;
-  go_vec.set_polar(go_ang.degree,1.0);
-  go_vec = go_vec + line_val * line.vec;
-
-
-  central.set_states(go_vec,max_val,max_val,AC_val,AC_flag,kick_);
+  central.set_states(go_vec,max_val,M_flag,AC_val,AC_flag,kick_);
 
   return go_vec;
 }

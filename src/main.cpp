@@ -8,6 +8,8 @@
 #include"ESP_communicate.h"    //ESPとの通信関連のクラス定義
 #include"central_availables.h" //ロボットの状態の一番下の部分に使う変数のクラス定義
 
+timer MOTOR_time;
+
 
 
 
@@ -98,25 +100,44 @@ void loop(){
       Serial8.write(10);
       Serial8.write(1);
       Serial8.write(37);
+      MOTOR_time.reset();
     }
 
     if(central.test_mode == 0){
-      angle ang(0,true);
+      go_vec.set_polar(ball.ang,1.0);
       float AC_val = ac.getAC_val();
-      central.set_states(go_vec,AC_val,MOTOR_AC_ONLY,AC_val,AC_ALL,KICK_OFF);
+      central.set_states(go_vec,200,MOTOR_ON,AC_val,AC_ALL,0);
       set_status_flag = 1;
     }
     else if(central.test_mode == 1){
-      //後で書く！！
+      // int TIME = MOTOR_time.read_ms();
+      Serial.print(" MOTOR ");
+      // Serial.print(TIME);
+      Serial.println();
+
+      // for(int i = 0; i < 4; i++){
+      //   if(TIME < 100){
+      //     central.set_states_no_output();
+      //     break;
+      //   }
+      //   else if(TIME < 500){
+      //     central.set_states_MOTOR_test(i);
+      //     break;
+      //   }
+      //   else{
+      //     TIME -= 500;
+      //   }
+      // }
     }
     else if(central.test_mode == 3){
       float AC_val = ac.getAC_val();
-      central.set_states(go_vec,AC_val,MOTOR_AC_ONLY,AC_val,AC_ALL,KICK_OFF);
+      central.set_states_onlyAC(AC_val);
       set_status_flag = 1;
     }
     else if(central.test_mode == 4){
       MOTOR.motor_0();
       kicker.TEST_();
+      central.set_states_no_output();
     }
     else if(central.test_mode == 5){
       ESP.PS4.run();
@@ -131,7 +152,8 @@ void loop(){
       MOTOR.motor_0();
     }
 
-    central.set_states(go_vec,0,MOTOR_STOP,0,AC_ALL,0);
+    central.set_states_no_output();
+    set_status_flag = 1;
   }
 
   else if(central.Mode == 99){
@@ -140,11 +162,34 @@ void loop(){
       kicker.stop();
 
     }
-    central.set_states(go_vec,0,MOTOR_STOP,0,AC_ALL,0);
+    central.set_states_no_output();
+    set_status_flag = 1;
   }
 
-  MOTOR.moveMotor(central.return_go_vector(),central.return_Motor_value(),central.return_AC_value(),central.return_AC_flag());
-  kicker.run(central.return_Kick_on());
+  if(set_status_flag == 1){
+    if(central.return_Motor_on() == MOTOR_STOP){
+      MOTOR.motor_0();
+    }
+    else if(central.return_Motor_on() == MOTOR_AC_ONLY){
+      MOTOR.motor_ac(central.return_AC_value());
+    }
+    else if(central.return_Motor_on() == MOTOR_ON){
+      MOTOR.moveMotor(central.return_go_vector(),central.return_Motor_value(),central.return_AC_value(),central.return_AC_flag());
+    }
+    else{
+      for(int i = 0; i < 4; i++){
+        if(central.return_Motor_on() == 3 + i){
+          MOTOR.Moutput(central.return_Motor_max(),i);
+        }
+      }
+    }
+
+    kicker.run(central.return_Kick_on());
+  }
+  else{
+    MOTOR.motor_0();
+    kicker.stop();
+  }
 }
 
 

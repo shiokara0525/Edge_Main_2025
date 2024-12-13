@@ -43,6 +43,9 @@ public:
   timer line_Get;   //ラインの情報が送られてくる周期を測るタイマー
 
   void set_states(Vector2D go_vec,int motor_value,int motor_on,int AC_value,int AC_flag,int Kick_on);  //状態設定するやつ
+  void set_states_no_output();
+  void set_states_onlyAC(int AC_val);
+  void set_states_MOTOR_test(int motor_on);
   void set_Motor_max(int Motor_max_);
 
   int return_AC_value();
