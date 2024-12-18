@@ -30,20 +30,19 @@ Vector2D Defence::defence(){
 
   int AC_flag = 0;                     //0だったら絶対的な角度とる 1だったらゴール向く
   int kick_ = 0;                       //0だったらキックしない 1だったらキック
-  int M_flag = 1;                      //1だったら動き続ける 0だったら止まる
-  Stop_flag = 0;
-  Lside_A = 0;
+  int moving_sort;                     //1だったら動き続ける 0だったら止まる
+  Stop_flag = STOP_NO;
+  is_on_lineside = 0;
+  is_center = 0;
 
   /*---------------------------------------------------------状況判断ステート--------------------------------------------------------*/
 
 
-  if(back_Flag == 1 && line.LINE_on == 0){  //角度がある程度あるかつラインの外だからゴールのほうに戻るよ
+  if(is_rean == 1 && line.LINE_on == 0){  //角度がある程度あるかつラインの外だからゴールのほうに戻るよ
     A = 15;
     A_15_flag = 1;
     c = 1;
   }
-
-  Camback_on.enterState(cam_back.on);
 
 
   if(c == 0){  //平常時どうするか判定
@@ -62,35 +61,26 @@ Vector2D Defence::defence(){
 
 
   /*---------------------------------------------------------動作ステート--------------------------------------------------------*/
-  Center_A = 0;
 
 
   if(A == 5){  //ボールがない時止まる
     if(A != B){
       B = A;
     }
-    M_flag = 3;
+    moving_sort = MOVING_STOP;
   }
 
 
 
   if(A == 10){  //ライントレース(アルゴリズムブログで書きたいな)
     if(A != B){
-      if(B == 15){
-        A_15_back_flag = 1;
-      }
-      else{
-        A_15_back_flag = 0;
-      }
       B = A;
       Timer.reset();
       Center.reset();
     }
     int go_flag = 0;
-    int side_stop_flag = 0; //ゴールが後ろにないから横に進むフラグ
     double go_border[2];  //ボールの角度によって進む方向を変えるためのボーダーの変数(ラインに対して垂直な直線で進む角度の区分を分けるイメージ)
     angle balldir(ball.ang,true);  //ボールの角度を入れるオブジェクト
-    Lside_A = 0;
 
     if(2 < line.num){  //ラインが3点以上で交わってたら例外的にする
       line.ang = 90;
@@ -117,36 +107,36 @@ Vector2D Defence::defence(){
     go_ang = go_border[go_flag] + 90;  //進む角度決定
     go_ang.to_range(180,true);  //進む角度を-180 ~ 180の範囲に収める
 
-    int back_F = 0;
-    int gotoSide_flag = 0;
+
+    int read_flag;  //1が真後ろ 2が後ろめ 3が前 0が真横
 
     if(150 < abs(go_ang.degree)){       //進む角度が真後ろにあるとき
+      read_flag = READ_BACK;
       // go_ang += 180;
-      back_F = 1;
-      M_flag = 3;
+      moving_sort = MOVING_STOP;
     }
     else if(115 < abs(go_ang.degree)){
+      read_flag = READ_BACK_ABOUT;
+
       line_val = 1.5;
       max_val -= 60;
     }
     else if(abs(go_ang.degree) < 60){  //前めに進むとき
+      read_flag = READ_FRONT;
+
       line_val = 2.0;
       max_val -= 60;
       if(cam_back.on && cam_back.Size < 20){
-        Lside_A = 1;
+        is_on_lineside = 1;
       }
       else{
-        Lside_A = 0;
+        is_on_lineside = 0;
       }
     }
     else{                              //横に進むとき
+      read_flag = READ_SIDE;
+
       line_val = 1.0;
-      if(go_ang.degree < 0){
-        gotoSide_flag = 1;
-      }
-      else{
-        gotoSide_flag = 2;
-      }
       
       if(cam_back.on == 0){
         if(cam_back.ang < 0){
@@ -155,55 +145,41 @@ Vector2D Defence::defence(){
         else{
           go_ang = 90;
         }
-        side_stop_flag = 1;
       }
       else{
         if(cam_back.senter && 135 < abs(ball.ang) && abs(ball.ang) < 172){
-          M_flag = 0;
+          moving_sort = MOVING_ONLY_AC;
         }
       }
     }
     // Serial.print(" godir : ");
     // Serial.println(go_ang.degree);
 
-    Center_A = 0;
     ball_fast.enterState(ball.vec_velocity.return_magnitude() > 24);
     for(int i = 0; i < 2; i++){
       int dif_val = abs(ball.ang - go_border[i]);
-      if(dif_val < stop_range && back_F == 0 && side_stop_flag == 0){  //正面方向にボールがあったら停止するよ
+      if(dif_val < stop_range && read_flag != READ_BACK && cam_back.on){  //正面方向にボールがあったら停止するよ
         if(ball_fast.readStateTimer(0) < 100){
-          Stop_flag = 2;  //ボールの速度を原因にストップしてないフラグ
-          gotoSide_flag = 0;
+          Stop_flag = STOP_NO_FAST;  //ボールの速度を原因にストップしてないフラグ
         }
         else{
-          M_flag = 0;
+          moving_sort = MOVING_ONLY_AC;
           max_val = 0;
-          Stop_flag = 1;  //普通に止まるフラグ
-          gotoSide_flag = 0;
+          Stop_flag = STOP_YES;  //普通に止まるフラグ
         }
       }
-    }
-
-    if(Stop_flag != 1){
-      last_goang = go_ang.degree;
-    }
-
-    ball_back.enterState(Stop_flag);
-
-    if(ball_back.readStateTimer(1) < 750){
-      go_ang = last_goang;
     }
 
     if(60 < abs(abs(go_ang.degree) - 90)){
       if(cam_back.on && cam_back.Size < 20){
-        Lside_A = 1;
+        is_on_lineside = 1;
       }
       else{
-        Lside_A = 0;
+        is_on_lineside = 0;
       }
     }
 
-    // Lside.enterState(Lside_A);
+    // Lside.enterState(is_on_lineside);
     // if(300 < Lside.readStateTimer(1) && 2000 < Mode_timer.read_ms()){
     //   A = 15;
     //   A_15_flag = 2;
@@ -211,7 +187,7 @@ Vector2D Defence::defence(){
     // }
 
     if(BALL_MAX_NUM * 1.25 < ball.far && abs(ball.ang) < 30){  //ぼーるが近くにあったら小突くやつ
-      Center_A = 3;
+      is_center = 1;
     }
 
     if(push_flag){  //ロボットが押し込まれてたら
@@ -229,28 +205,20 @@ Vector2D Defence::defence(){
           go_ang += 180;
         }
       }
-      M_flag = 1;
+      moving_sort = MOVING_LINE_TRACE;
     }
 
-    Center.enterState(Center_A);
+    Center.enterState(is_center);
 
-    if(Center_A == 3 && 500 < Center.readStateTimer(3) && 2000 < A_12_t.read_ms()){
+    if(500 < Center.readStateTimer(1) && 2000 < A_12_t.read_ms()){
       A = 12;
       c = 1;
       Center.enterState(0);
     }
 
     go_ang.to_range(180,true);  //進む角度を-180 ~ 180の範囲に収める
-
-    if(Timer.read_ms() < 300 && A_15_back_flag){
-      M_flag = 3;
-    }
     // Serial.print(" Lside : ");
-    // Serial.print(Lside_A);
-    gotoSide.enterState(gotoSide_flag);
-    if(250 < gotoSide.readStateTimer() && gotoSide_flag != 0){
-      Serial.print(" max_val -= 60 ");
-    }
+    // Serial.print(is_on_lineside);
   }
 
 
@@ -267,7 +235,7 @@ Vector2D Defence::defence(){
     go_ang = abs(ball.ang);
 
     go_ang = go_ang.degree * (ball.ang < 0 ? -1 : 1);
-    M_flag = 2;
+    moving_sort = MOVING_NO_LINE;
     max_val -= 30;
 
     if(!line.LINE_on){
@@ -284,7 +252,7 @@ Vector2D Defence::defence(){
         A = 15;
         A_15_flag = 3;
         c = 1;
-        Lside_A = 1;
+        is_on_lineside = 1;
         Serial.println(" !!! 4 !!! ");
       }
       if(550 < Timer.read_ms()){
@@ -308,7 +276,7 @@ Vector2D Defence::defence(){
       Timer.reset();
     }
     go_ang = 0;
-    M_flag = 2;
+    moving_sort = MOVING_NO_LINE;
     AC_flag = 1;
 
     if(!line.LINE_on){
@@ -344,27 +312,20 @@ Vector2D Defence::defence(){
       B = A;
       Timer.reset();
       line_F = 2;
-      if(Lside_A == 1){
+      if(is_on_lineside == 1){
         line_F = 1;
       }
-      A_15_front = 0;
     }
     go_ang = -cam_back.ang + 180;
-    M_flag = 2;
+    moving_sort = MOVING_NO_LINE;
     max_val -= 45;
-    Serial.print(" A_15_flag : ");
-    Serial.println(A_15_front);
-
-    if(abs(ac.dir) < 30){
-      A_15_front = 1;
-    }
 
     if(A_15_flag == 0){
-      M_flag = 0;
+      moving_sort = MOVING_ONLY_AC;
       AC_flag = 0;
     }
     else{
-      M_flag = 2;
+      moving_sort = MOVING_NO_LINE;
       AC_flag = 0;
     }
 
@@ -401,7 +362,7 @@ Vector2D Defence::defence(){
     }
     if(Timer.read_ms() < 50){
       go_ang = 0;
-      M_flag = 2;
+      moving_sort = MOVING_NO_LINE;
     }
     else{
       c = 0;
@@ -416,7 +377,7 @@ Vector2D Defence::defence(){
       Timer.reset();
     }
     go_ang = line.ang_old;
-    M_flag = 2;
+    moving_sort = MOVING_NO_LINE;
 
     if(500 < Timer.read_ms()){
       if(90 < abs(line.ang_old)){
@@ -439,7 +400,7 @@ Vector2D Defence::defence(){
   /*---------------------------------------------------------出力ステート--------------------------------------------------------*/
 
 
-  back_Flag = 0;
+  is_rean = REAN_NO;
   ac.dir_target = target;
   push_flag = 0;
 
@@ -447,20 +408,20 @@ Vector2D Defence::defence(){
     AC_val = ac.getAC_val() * 1.5;
     if(line.LINE_on == 0){
       if(abs(line.ang_old) < 90){
-        back_Flag = 0;
+        is_rean = REAN_NO;
       }
       else{
-        back_Flag = 1;
-        M_flag = 0;
+        is_rean = REAN_YES;
+        moving_sort = MOVING_ONLY_AC;
       }
     }
     else{
       if(ball.ball_get){
         if(abs(line.ang_old) < 90){
-          back_Flag = 0;
+          is_rean = REAN_NO;
         }
         push_flag = 1;
-        M_flag = 1;
+        moving_sort = MOVING_LINE_TRACE;
       }
     }
   }
@@ -476,25 +437,30 @@ Vector2D Defence::defence(){
   // Serial.print(" A : ");
   // Serial.print(A);
   // Serial.println();
-  // M_flag = 3;
+  // moving_sort = MOVING_STOP;
   Serial.print(" max_val : ");
   Serial.println(max_val);
 
   Vector2D go_vec;
   go_vec.set_polar(go_ang.degree,1.0);
 
-  if(M_flag == 1){
+  if(moving_sort == MOVING_LINE_TRACE){
     go_vec = go_vec + line_val * line.vec;
   }
 
-  if(M_flag == 1 || M_flag == 2){
-    M_flag = 1;
+  int motor_on;
+
+  if(moving_sort == MOVING_LINE_TRACE || moving_sort == MOVING_NO_LINE){
+    motor_on = MOTOR_ON;
   }
-  else if(M_flag == 3){
-    M_flag = 2;
+  else if(moving_sort == MOVING_STOP){
+    motor_on = MOTOR_STOP;
+  }
+  else if(moving_sort == MOVING_ONLY_AC){
+    motor_on = MOTOR_AC_ONLY;
   }
 
-  central.set_states(go_vec,max_val,M_flag,AC_val,AC_flag,kick_);
+  central.set_states(go_vec,max_val,motor_on,AC_val,AC_flag,kick_);
 
   return go_vec;
 }
