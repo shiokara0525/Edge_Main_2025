@@ -6,7 +6,7 @@ void Attack::available_set(int *check_val){ //変数を受け取ったり三次�
   RA_b = central.Values[1] / 100.0;
   RA_c = central.Values[2];
   RA_d = central.Values[3];
-  AC_D = central.Values[4] / 100.0;
+  AC_cam_coef = central.Values[4] / 100.0;
   A = 0;
   c = 0;
   // float ang[4] = {0,20,30,45};
@@ -159,6 +159,9 @@ void Attack::attack(){
           max_val = go_val;
         }
       }
+      // if(abs(ball.ang) < 45){
+      //   go_ang = RA_a * pow(abs(ball.ang),3) + RA_b * pow(abs(ball.ang),2) + RA_c * pow(abs(ball.ang),1) + RA_d;
+      // }
       else if(abs(ball.ang) < 90){
         go_ang = abs(ball.ang) * RA_a;
         max_val = 220;
@@ -183,8 +186,7 @@ void Attack::attack(){
       front_flag = 1;
     }
 
-    ang_now = go_ang.degree;
-    int goang_deff = abs(goang_ma.sum(ang_now - ang_old));
+    int goang_deff = abs(goang_ma.sum(go_ang.degree - ang_old));
 
     if(goang_deff < 20 && 10 < abs(ball.ang) && abs(ball.ang) < 90){
       go_ang.degree += 20;
@@ -206,7 +208,7 @@ void Attack::attack(){
     if(go_flag == 1){
       go_ang = ball.ang;
     }
-    ang_old = ang_now;
+    ang_old = go_ang.degree;
   }
 
 
@@ -407,7 +409,6 @@ void Attack::attack(){
       B = A;
       Timer.reset();
     }
-    A_24_t.reset();
     if(Timer.read_ms() < 500){
       go_ang = 180;
       // max_val = 180;
@@ -505,7 +506,7 @@ void Attack::attack(){
     AC_val = ac.getAC_val();
   }
   else if(AC_flag == 1){
-    AC_val = ac.getCam_val(-cam_front.ang) * AC_D;
+    AC_val = ac.getCam_val(-cam_front.ang) * AC_cam_coef;
   }
 
   if(back_flag){

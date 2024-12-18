@@ -16,7 +16,7 @@ class Attack{
         float RA_c = 1.8;
         float RA_d;
         float RA_e;
-        float AC_D = 1.0;
+        float AC_cam_coef = 1.0;
 
         float ang_0 = 10;
         float ang_20 = 45;
@@ -24,21 +24,19 @@ class Attack{
         float ang_45 = 135;
 
         float ang_old = 0;
-        float ang_now = 0;
 
         int cam_front_on = 0;
         State Catch;
 
         int back_count = 0;
-        int go_flag = 0;
-        int back_flag = 0;
+        int go_flag = 0;     //ライン際でボールにアタックするかしないか
+        int back_flag = 0;   //ラインから逃げるときは問答無用で出力マックス
 
-        int ballang_first;
 
-        int rake_flag = 0;
+        int rake_flag = 0;   //ボールの書き出し
         State rake;
 
-        int first_ang = 0;
+        int first_ang = 0;   //セットプレイの時の初期角度
 
         timer play_time;
 
@@ -46,14 +44,12 @@ class Attack{
         int go_val_back = 255;
 
 
-        timer A_24_t;
         timer Timer;
         State CFO;
 
         byte return_byte[4];
 
         State ball_front;
-        State go_front;
 
         MA goang_ma;
     public:
