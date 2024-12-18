@@ -51,8 +51,6 @@ class Defence{
 
 
         int line_F = 0;     //A=15のとき、ステート抜けるか判定するフラグ
-        int is_rean = 0;  //A=15に行くフラグ
-        int push_flag = 0;  //押し込まれてるフラグ
 
         int line_none_flag = 0;
 

@@ -35,32 +35,7 @@ Vector2D Defence::defence(){
   is_on_lineside = 0;
   is_center = 0;
 
-  /*---------------------------------------------------------状況判断ステート--------------------------------------------------------*/
-
-
-  if(is_rean == 1 && line.LINE_on == 0){  //角度がある程度あるかつラインの外だからゴールのほうに戻るよ
-    A = 15;
-    A_15_flag = 1;
-    c = 1;
-  }
-
-
-  if(c == 0){  //平常時どうするか判定
-    if(line.LINE_on == 1){
-      if(ball.flag == 0){  //ボールがないまたはゴールの端にいるときとまる
-        A = 5;
-      }
-      else{
-        A = 10;
-      }
-    }
-    else{
-      A = 20;
-    }
-  }
-
-
-  /*---------------------------------------------------------動作ステート--------------------------------------------------------*/
+  /*---------------------------------------------------------動作決定ステート--------------------------------------------------------*/
 
 
   if(A == 5){  //ボールがない時止まる
@@ -190,7 +165,7 @@ Vector2D Defence::defence(){
       is_center = 1;
     }
 
-    if(push_flag){  //ロボットが押し込まれてたら
+    if(ball.ball_get){  //ロボットが押し込まれてたら
       if(ac.dir < 0){
         if(go_ang.degree < 0){
         }
@@ -219,6 +194,10 @@ Vector2D Defence::defence(){
     go_ang.to_range(180,true);  //進む角度を-180 ~ 180の範囲に収める
     // Serial.print(" Lside : ");
     // Serial.print(is_on_lineside);
+
+    if(!line.LINE_on){
+      A = 20;
+    }
   }
 
 
@@ -365,7 +344,7 @@ Vector2D Defence::defence(){
       moving_sort = MOVING_NO_LINE;
     }
     else{
-      c = 0;
+      A = 10;
     }
   }
 
@@ -393,6 +372,19 @@ Vector2D Defence::defence(){
         }
       }
     }
+
+
+
+    if(30 < abs(ac.dir)){
+      if(90 < abs(line.ang_old)){
+        A = 15;
+        A_15_flag = 1;
+      }
+    }
+
+    if(line.LINE_on){
+      A = 10;
+    }
   }
 
 
@@ -400,32 +392,9 @@ Vector2D Defence::defence(){
   /*---------------------------------------------------------出力ステート--------------------------------------------------------*/
 
 
-  is_rean = REAN_NO;
   ac.dir_target = target;
-  push_flag = 0;
 
-  if(30 < abs(ac.dir) && A != 13){
-    AC_val = ac.getAC_val() * 1.5;
-    if(line.LINE_on == 0){
-      if(abs(line.ang_old) < 90){
-        is_rean = REAN_NO;
-      }
-      else{
-        is_rean = REAN_YES;
-        moving_sort = MOVING_ONLY_AC;
-      }
-    }
-    else{
-      if(ball.ball_get){
-        if(abs(line.ang_old) < 90){
-          is_rean = REAN_NO;
-        }
-        push_flag = 1;
-        moving_sort = MOVING_LINE_TRACE;
-      }
-    }
-  }
-  else if(AC_flag == 0){
+  if(AC_flag == 0){
     AC_val = ac.getAC_val();
   }
   else if(AC_flag == 1){
@@ -433,13 +402,6 @@ Vector2D Defence::defence(){
   }
 
 
-  kicker.run(kick_);
-  // Serial.print(" A : ");
-  // Serial.print(A);
-  // Serial.println();
-  // moving_sort = MOVING_STOP;
-  Serial.print(" max_val : ");
-  Serial.println(max_val);
 
   Vector2D go_vec;
   go_vec.set_polar(go_ang.degree,1.0);
