@@ -2,7 +2,7 @@
 
 void Defence::available_set(){
   go_val = central.return_Motor_max();
-  A = 0;
+  A = 10;
   c = 0;
   Mode_timer.reset();
 }
@@ -30,7 +30,7 @@ Vector2D Defence::defence(){
 
   int AC_flag = 0;                     //0だったら絶対的な角度とる 1だったらゴール向く
   int kick_ = 0;                       //0だったらキックしない 1だったらキック
-  int moving_sort;                     //1だったら動き続ける 0だったら止まる
+  int moving_sort = MOVING_LINE_TRACE; //1だったら動き続ける 0だったら止まる
   Stop_flag = STOP_NO;
   is_on_lineside = 0;
   is_center = 0;
@@ -401,6 +401,9 @@ Vector2D Defence::defence(){
     AC_val = ac.getCam_val(-cam_front.ang);
   }
 
+  Serial.print(" A : ");
+  Serial.println(A);
+
 
 
   Vector2D go_vec;
@@ -410,7 +413,7 @@ Vector2D Defence::defence(){
     go_vec = go_vec + line_val * line.vec;
   }
 
-  int motor_on;
+  int motor_on = 0;
 
   if(moving_sort == MOVING_LINE_TRACE || moving_sort == MOVING_NO_LINE){
     motor_on = MOTOR_ON;
