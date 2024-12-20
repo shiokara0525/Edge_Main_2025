@@ -38,6 +38,8 @@ void Attack::available_set(int *check_val){ //変数を受け取ったり三次�
   play_time.reset();
   first_ang = ac.dir_n;
   goang_ma.setLenth(100);
+  
+  A = 10;
 }
 
 
@@ -136,36 +138,31 @@ void Attack::attack(){
     // float confidencial_num = (ball.vec.return_magnitude() - BALL_MAX_NUM * 0.8) * 0.025;
     int front_flag = 0;
 
-    if(abs(ball.world_far) < 75){
-      if(abs(ball.ang) < 20){
-        go_ang = -0.0015 * pow(abs(ball.ang),3) + 0.090 * pow(abs(ball.ang),2) - 0.20 * abs(ball.ang);
-        max_val = 240;
-        if(abs(ball.ang) < 10){
-          max_val = go_val;
-        }
-      }
-      // if(abs(ball.ang) < 45){
-      //   go_ang = RA_a * pow(abs(ball.ang),3) + RA_b * pow(abs(ball.ang),2) + RA_c * pow(abs(ball.ang),1) + RA_d;
-      // }
-      else if(abs(ball.ang) < 90){
-        go_ang = abs(ball.ang) * RA_a;
-        max_val = 220;
-      }
-      else{
-        go_ang = abs(ball.ang) + RA_c;
-      }
+    if(abs(ball.ang) < 10){
+      go_ang = abs(ball.ang);
+      max_val = 240;
+    }
+    // if(abs(ball.ang) < 45){
+    //   go_ang = RA_a * pow(abs(ball.ang),3) + RA_b * pow(abs(ball.ang),2) + RA_c * pow(abs(ball.ang),1) + RA_d;
+    // }
+    else if(abs(ball.ang) < 90){
+      go_ang = abs(ball.ang) * 2.0;
+      max_val = 220;
     }
     else{
+      go_ang = abs(ball.ang) + 75;
+    }
+
+    if(75 < ball.world_far){
       if(90 < abs(ball.ang)){
-        go_ang = abs(ball.ang) + RA_d;
+        go_ang = abs(ball.ang) + 50;
       }
     }
 
 
     if(30 < cam_front.Size && (abs(ball.ang) < 15 || abs(cam_front.ang - ball.ang) < 10)){
-      go_ang = 0.1 * (ball.ang * ball.ang);
-      if(ball_front.readStateTimer(1) < 400){
-        max_val = 220;
+      if(ball_front.readStateTimer(1) < 200){
+        max_val = 180;
       }
       AC_flag = 1;
       front_flag = 1;
@@ -274,7 +271,7 @@ void Attack::attack(){
     else if(line.side_flag){
       A = 21;
     }
-    else{
+    else if(!ball.ball_get){
       A = 10;
     }
   }
@@ -512,6 +509,10 @@ void Attack::attack(){
   if(back_flag){
     max_val = go_val_back;
   }
+
+  Serial.print(" A : ");
+  Serial.print(A);
+  Serial.println();
 
   Vector2D go_vec;
   go_vec.set_polar(go_ang.degree,max_val);
