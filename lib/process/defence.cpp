@@ -154,12 +154,12 @@ Vector2D Defence::defence(){
       }
     }
 
-    // Lside.enterState(is_on_lineside);
-    // if(300 < Lside.readStateTimer(1) && 2000 < Mode_timer.read_ms()){
-    //   A = 15;
-    //   A_15_flag = 2;
-    //   c = 1;
-    // }
+    Lside.enterState(is_on_lineside);
+    if(600 < Lside.readStateTimer(1) && 2000 < Mode_timer.read_ms()){
+      A = 15;
+      A_15_flag = 2;
+      c = 1;
+    }
 
     if(BALL_MAX_NUM * 1.25 < ball.far && abs(ball.ang) < 30){  //ぼーるが近くにあったら小突くやつ
       is_center = 1;
