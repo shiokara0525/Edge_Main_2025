@@ -161,6 +161,7 @@ void Attack::attack(){
 
 
     if(30 < cam_front.Size && (abs(ball.ang) < 15 || abs(cam_front.ang - ball.ang) < 10)){
+      go_ang = 0.1 * abs(ball.ang) * abs(ball.ang);
       if(ball_front.readStateTimer(1) < 200){
         max_val = 180;
       }
