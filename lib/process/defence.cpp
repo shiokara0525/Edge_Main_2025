@@ -145,14 +145,14 @@ Vector2D Defence::defence(){
       }
     }
 
-    if(60 < abs(abs(go_ang.degree) - 90)){
-      if(cam_back.on && cam_back.Size < 20){
-        is_on_lineside = 1;
-      }
-      else{
-        is_on_lineside = 0;
-      }
-    }
+    // if(60 < abs(abs(go_ang.degree) - 90)){
+    //   if(cam_back.on && cam_back.Size < 20){
+    //     is_on_lineside = 1;
+    //   }
+    //   else{
+    //     is_on_lineside = 0;
+    //   }
+    // }
 
     Lside.enterState(is_on_lineside);
     if(600 < Lside.readStateTimer(1) && 2000 < Mode_timer.read_ms()){
