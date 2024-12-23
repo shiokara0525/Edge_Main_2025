@@ -87,8 +87,7 @@ Vector2D Defence::defence(){
 
     if(150 < abs(go_ang.degree)){       //進む角度が真後ろにあるとき
       read_flag = READ_BACK;
-      // go_ang += 180;
-      moving_sort = MOVING_STOP;
+      go_ang += 180;
     }
     else if(115 < abs(go_ang.degree)){
       read_flag = READ_BACK_ABOUT;
