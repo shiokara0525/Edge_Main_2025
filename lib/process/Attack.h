@@ -59,4 +59,5 @@ class Attack{
         int check_val[6];
         int send_val[2];
         int setplay_flag = 0;
+        int line_flag;
 };

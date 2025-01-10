@@ -138,9 +138,8 @@ void Attack::attack(){
     // float confidencial_num = (ball.vec.return_magnitude() - BALL_MAX_NUM * 0.8) * 0.025;
     int front_flag = 0;
 
-    if(abs(ball.ang) < 10){
+    if(abs(ball.ang) < 20){
       go_ang = abs(ball.ang);
-      max_val = 240;
     }
     // if(abs(ball.ang) < 45){
     //   go_ang = RA_a * pow(abs(ball.ang),3) + RA_b * pow(abs(ball.ang),2) + RA_c * pow(abs(ball.ang),1) + RA_d;
@@ -154,16 +153,19 @@ void Attack::attack(){
     }
 
     if(75 < ball.world_far){
-      if(90 < abs(ball.ang)){
+      if(30 < cam_front.Size && (60 < abs(ball.ang) && abs(ball.ang) < 90)){
+        go_ang = abs(ball.ang) * 1.7;
+      }
+      else if(90 <= abs(ball.ang)){
         go_ang = abs(ball.ang) + 50;
       }
     }
 
 
-    if(30 < cam_front.Size && (abs(ball.ang) < 15 || abs(cam_front.ang - ball.ang) < 10)){
-      go_ang = 0.1 * abs(ball.ang) * abs(ball.ang);
-      if(ball_front.readStateTimer(1) < 200){
-        max_val = 180;
+    if(30 < cam_front.Size && (abs(ball.ang) < 15 || (abs(ball.ang) < 30 && abs(cam_front.ang - ball.ang) < 10))){
+      go_ang = 0.2 * abs(ball.ang) * abs(ball.ang);
+      if(ball_front.readStateTimer(1) < 100){
+        max_val = 200;
       }
       AC_flag = 1;
       front_flag = 1;
@@ -285,30 +287,31 @@ void Attack::attack(){
     if(A != B){
       B = A;
       Timer.reset();
+      line_flag = line.switchLineflag(line.vec.return_azimuth());
     }
     back_flag = 1;
     // target = Line_target_dir;
-    go_ang = line.vec_go.return_azimuth();
+    go_ang = line.decideGoang(line.vec.return_azimuth(),line_flag);
 
 
     if(line.LINE_change == -1){  //踏んでない状態から踏んでる状態になった時
       A = 10;
       if(150 < abs(degrees(line.vec_first.return_azimuth()))){  //後ろにラインがあったら
         if(30 < abs(ball.ang) && abs(ball.ang) <= 85){
-          A = 25;  //前に行く
+          // A = 25;  //前に行く
         }
         else if(85 < abs(ball.ang) && abs(ball.ang) < 120){
-          A = 26;  //横に行く
+          // A = 26;  //横に行く
         }
       }
       else if(45 < (degrees(line.vec_first.return_azimuth())) && (degrees(line.vec_first.return_azimuth())) < 135){
         if(0 <= cam_back.ang){
-          A = 25;
+          // A = 25;
         }
       }
       else if(-135 < (degrees(line.vec_first.return_azimuth())) && (degrees(line.vec_first.return_azimuth())) < -45){
         if(cam_back.ang <= 0){
-          A = 25;
+          // A = 25;
         }
       }
       else if(abs(degrees(line.vec_first.return_azimuth())) < 45){  //前にラインがあったら
