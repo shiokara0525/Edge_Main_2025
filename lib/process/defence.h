@@ -7,30 +7,40 @@
 #include<Sup.h>
 #include<central_availables.h>
 
+#define READ_SIDE 0
+#define READ_BACK 1
+#define READ_BACK_ABOUT 2
+#define READ_FRONT 3
+
+#define MOVING_ONLY_AC 0
+#define MOVING_LINE_TRACE 1
+#define MOVING_NO_LINE 2
+#define MOVING_STOP 3
+
+#define STOP_NO 0
+#define STOP_YES 1
+#define STOP_NO_FAST 2
+
+#define REAN_YES 1
+#define REAN_NO 0
+
+
+
 
 class Defence{
     private:
         timer Timer;
         int M_time;
 
-        int Lside_A = 0;
+        int is_on_lineside = 0;
         State Lside;
         
-        int Center_A = 0;
+        int is_center = 0;
         State Center;
-        State Camback_on;
 
         State ball_fast;
 
         timer A_12_t;
-        int go_flag = 0;
-
-        State ball_back;
-        float last_goang;
-
-        State gotoSide;
-
-        int A_15_front;
 
         int A = 0;
         int B = 999;
@@ -38,15 +48,13 @@ class Defence{
         int stop_range = 20;
         const int far_th = 130;
         int go_val = 220;
-        int print_flag = 1; // 1だったらシリアルプリントする
+
+
         int line_F = 0;     //A=15のとき、ステート抜けるか判定するフラグ
-        int back_Flag = 0;  //A=15に行くフラグ
-        int push_flag = 0;  //押し込まれてるフラグ
 
         int line_none_flag = 0;
 
         int A_15_flag;
-        int A_15_back_flag;
 
         int Stop_flag;
 
