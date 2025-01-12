@@ -161,7 +161,8 @@ int LINE::switchLineflag(float line_dir){
 }
 
 
-float LINE::decideGoang(angle linedir,int line_flag){
+float LINE::decideGoang(float line_azimuth,int line_flag){
+  angle linedir(line_azimuth,true);
   float goang = 0;
   linedir.to_range(-15,false);
   for(int i = 0; i < 12; i++){  //角度を12つに区分して、それぞれどの区分にいるか判定する

@@ -11,7 +11,7 @@ class LINE{
 public:
     int getLINE_Vec(); //ラインセンサのベクトル(距離,角度)を取得する関数
     int switchLineflag(float);
-    float decideGoang(angle,int);
+    float decideGoang(float,int);
     void print();
     void print_2();
     void begin();
