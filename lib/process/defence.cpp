@@ -121,7 +121,7 @@ Vector2D Defence::defence(){
         }
       }
       else{
-        if(cam_back.senter && 135 < abs(ball.ang) && abs(ball.ang) < 172){
+        if(cam_back.center && 135 < abs(ball.ang) && abs(ball.ang) < 172){
           moving_sort = MOVING_ONLY_AC;
         }
       }

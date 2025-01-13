@@ -141,6 +141,9 @@ void Attack::attack(){
     if(abs(ball.ang) < 20){
       go_ang = abs(ball.ang);
     }
+    else if(abs(ball.ang) < 30){  //(20,20),(30,60)
+      go_ang = abs(ball.ang - 15) * 4.0;
+    }
     // if(abs(ball.ang) < 45){
     //   go_ang = RA_a * pow(abs(ball.ang),3) + RA_b * pow(abs(ball.ang),2) + RA_c * pow(abs(ball.ang),1) + RA_d;
     // }
@@ -153,8 +156,8 @@ void Attack::attack(){
     }
 
     if(75 < ball.world_far){
-      if(30 < cam_front.Size && (60 < abs(ball.ang) && abs(ball.ang) < 90)){
-        go_ang = abs(ball.ang) * 1.7;
+      if(cam_front.Size < 30 && (60 < abs(ball.ang) && abs(ball.ang) < 90)){
+        go_ang = abs(ball.ang) * 1.8;
       }
       else if(90 <= abs(ball.ang)){
         go_ang = abs(ball.ang) + 50;
@@ -221,7 +224,7 @@ void Attack::attack(){
     Serial.println();
 
     if(cam_front.on == 1){  //カメラ見てるとき
-      if(cam_front.on == 1 && (abs(cam_front.ang) < 20 || cam_front.senter)){  //正面にゴールあってゴールもある程度近くにある時
+      if(cam_front.on == 1 && (abs(cam_front.ang) < 20 || cam_front.center)){  //正面にゴールあってゴールもある程度近くにある時
         cam_front_on = 1;  //打っていいよ
         go_ang = 0;
         AC_flag = 1;
@@ -243,7 +246,7 @@ void Attack::attack(){
     CFO.enterState(cam_front_on);
     if(cam_front_on == 1){  //打っていいよフラグ
 
-      if(250 < CFO.readStateTimer()){
+      if(150 < CFO.readStateTimer()){
         kick_ = 1;  //打っていいよフラグが0.2秒立ってたら打つ
       }
       if(50 < cam_front.Size){
@@ -291,7 +294,8 @@ void Attack::attack(){
     }
     back_flag = 1;
     // target = Line_target_dir;
-    go_ang = line.decideGoang(line.vec.return_azimuth(),line_flag);
+    go_ang = line.vec_go.return_azimuth();
+    delay(30);
 
 
     if(line.LINE_change == -1){  //踏んでない状態から踏んでる状態になった時
@@ -315,14 +319,14 @@ void Attack::attack(){
         }
       }
       else if(abs(degrees(line.vec_first.return_azimuth())) < 45){  //前にラインがあったら
-        if(cam_front.on){  //ゴール前だったら
+        if(cam_front.center){  //ゴール前だったら
           back_count++;
           if(back_count % 4 == 0 && abs(ball.ang) < 45 && !ball.ball_get){
             A = 22;  //ボールを押し込むやつ
             Serial.println(" line_front "); 
           }
         }
-        else if(cam_front.on == 0){  //notゴール前だったら
+        else{  //notゴール前だったら
           back_count++;
           if(back_count % 4 == 0){
             A = 24;  //後ろに下がるやつ

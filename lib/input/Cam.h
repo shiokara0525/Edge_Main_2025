@@ -31,7 +31,7 @@ class Cam{
         float Size;
         int on = 0;
         int color = 0;
-        int senter;
+        int center;
         MA ang_;
         void print();
         void begin();
