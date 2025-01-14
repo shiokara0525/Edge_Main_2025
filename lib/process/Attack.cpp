@@ -93,7 +93,7 @@ void Attack::attack(){
 
     if(Timer.read_ms() < 500){
       go_ang = 180;
-      // max_val = 200;
+      max_val = 200;
     }
     else{
       M_flag = 0;
@@ -295,10 +295,9 @@ void Attack::attack(){
     back_flag = 1;
     // target = Line_target_dir;
     go_ang = line.vec_go.return_azimuth();
-    delay(30);
 
 
-    if(line.LINE_change == -1){  //踏んでない状態から踏んでる状態になった時
+    if(line.LINE_change == -1 && 50 < Timer.read_ms()){  //踏んでない状態から踏んでる状態になった時
       A = 10;
       if(150 < abs(degrees(line.vec_first.return_azimuth()))){  //後ろにラインがあったら
         if(30 < abs(ball.ang) && abs(ball.ang) <= 85){
