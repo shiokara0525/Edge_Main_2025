@@ -142,7 +142,7 @@ void Attack::attack(){
       go_ang = abs(ball.ang);
     }
     else if(abs(ball.ang) < 30){  //(20,20),(30,60)
-      go_ang = abs(ball.ang - 15) * 4.0;
+      go_ang = (abs(ball.ang) - 15.0) * 4.0;
     }
     // if(abs(ball.ang) < 45){
     //   go_ang = RA_a * pow(abs(ball.ang),3) + RA_b * pow(abs(ball.ang),2) + RA_c * pow(abs(ball.ang),1) + RA_d;
