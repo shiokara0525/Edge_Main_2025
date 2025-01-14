@@ -190,7 +190,7 @@ void Attack::attack(){
     go_ang = go_ang.degree * (ball.ang < 0 ? -1 : 1);  //角度の正負を元に戻す
 
     // Serial.println();
-    if(go_flag == 1){
+    if(go_flag == 1 && Timer.read_ms() < 300){
       go_ang = ball.ang;
     }
     ang_old = go_ang.degree;

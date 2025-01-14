@@ -64,6 +64,7 @@ int Cam::getCamdata(){
         }
     }
     on = 0;
+    center = 0;
     return 0;
 }
 
