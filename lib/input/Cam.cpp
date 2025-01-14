@@ -40,10 +40,10 @@ int Cam::getCamdata(){
             ang = ang_.demandAve((data_byte_b[0] - 67)*3/4);
             Size = blue_h;
             if(blue_x1 < 80 && 80 < blue_x2){
-                senter = 1;
+                center = 1;
             }
             else{
-                senter = 0;
+                center = 0;
             }
             on = 1;
             return 1;
@@ -54,16 +54,17 @@ int Cam::getCamdata(){
             ang = ang_.demandAve((data_byte_y[0] - 67)*3/4);
             Size = yellow_h;
             if(Yellow_x1 < 80 && 80 < Yellow_x2){
-                senter = 1;
+                center = 1;
             }
             else{
-                senter = 0;
+                center = 0;
             }
             on = 1;
             return 1;
         }
     }
     on = 0;
+    center = 0;
     return 0;
 }
 
@@ -79,7 +80,7 @@ void Cam::print(){
         Serial.print(ang);
         Serial.print("  size : ");
         Serial.print(Size);
-        Serial.print(" senter : ");
-        Serial.print(senter);
+        Serial.print(" center : ");
+        Serial.print(center);
     }
 }

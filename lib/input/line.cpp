@@ -123,9 +123,11 @@ int LINE::getLINE_Vec() { //ラインのベクトル(距離,角度)を取得す�
       firstDir_flag = switchLineflag(ang);
       vec_first = vec;
       num_first = num;
-      if(2 < num){
-        vec_first.set_coodinate(0,0);
-      }
+      vec_go = -1 * vec;
+      go_ang_first = vec_go.return_azimuth();
+      // if(2 < num){
+      //   vec_first.set_coodinate(0,0);
+      // }
     }
     vec_go = -1 * vec;
     if(vec * vec_first < 0){
@@ -133,10 +135,11 @@ int LINE::getLINE_Vec() { //ラインのベクトル(距離,角度)を取得す�
     }
     else if(vec * vec_first == 0){
       vec_go = -1 * vec_first;
-      if(2 < num){
-        vec_go = -1 * vec;
-      }
+      // if(2 < num){
+      //   vec_go = -1 * vec;
+      // }
     }
+    go_ang_old = vec_go.return_azimuth();
 
     // Serial.print(" 内積 : ");
     // Serial.print(vec * vec_first);
@@ -161,7 +164,8 @@ int LINE::switchLineflag(float line_dir){
 }
 
 
-float LINE::decideGoang(angle linedir,int line_flag){
+float LINE::decideGoang(float line_azimuth,int line_flag){
+  angle linedir(line_azimuth,true);
   float goang = 0;
   linedir.to_range(-15,false);
   for(int i = 0; i < 12; i++){  //角度を12つに区分して、それぞれどの区分にいるか判定する

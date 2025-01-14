@@ -6,7 +6,7 @@ void Attack::available_set(int *check_val){ //変数を受け取ったり三次�
   RA_b = central.Values[1] / 100.0;
   RA_c = central.Values[2];
   RA_d = central.Values[3];
-  AC_D = central.Values[4] / 100.0;
+  AC_cam_coef = central.Values[4] / 100.0;
   A = 0;
   c = 0;
   // float ang[4] = {0,20,30,45};
@@ -38,6 +38,8 @@ void Attack::available_set(int *check_val){ //変数を受け取ったり三次�
   play_time.reset();
   first_ang = ac.dir_n;
   goang_ma.setLenth(100);
+  
+  A = 10;
 }
 
 
@@ -74,33 +76,9 @@ void Attack::attack(){
   rake_flag = 0;
 
 
-  if(ball.flag == 0){  //ボールがなかったら止まる
-    c = 0;
-  }
 
-
-  if(c == 0){
-    if(line.LINE_on == 1 || line.LINE_change == -1){
-      A = 20;  //ライン踏んでるときの処理
-    }
-    else{
-      if(line.side_flag != 0){
-        A = 21;  //サイドライン読んでるときの処理
-      }
-      else{
-        if(ball.flag == 1){  //ボールがあるときの処理
-          if(1 <= ball.ball_get && abs(ball.ang) < 45){
-            A = 11;  //ボール持ってるときの処理
-          }
-          else{
-            A = 10;  //ボール持ってないときの処理
-          }
-        }
-        else{
-          A = 5;  //ボールがないときの処理
-        }
-      }
-    }
+  if(!ball.flag){
+    A = 5;  //ボールなかったら止まる
   }
 
 
@@ -115,10 +93,19 @@ void Attack::attack(){
 
     if(Timer.read_ms() < 500){
       go_ang = 180;
-      // max_val = 200;
+      max_val = 200;
     }
     else{
       M_flag = 0;
+    }
+
+    if(ball.flag){
+      if(line.LINE_on){
+        A = 20;
+      }
+      else{
+        A = 10;
+      }
     }
   }
 
@@ -151,42 +138,40 @@ void Attack::attack(){
     // float confidencial_num = (ball.vec.return_magnitude() - BALL_MAX_NUM * 0.8) * 0.025;
     int front_flag = 0;
 
-    if(abs(ball.ang) < 10){
-      go_ang = -0.0015 * pow(abs(ball.ang),3) + 0.090 * pow(abs(ball.ang),2) - 0.20 * abs(ball.ang);
-      max_val = 240;
-      if(abs(ball.ang) < 10){
-        max_val = go_val;
-      }
+    if(abs(ball.ang) < 20){
+      go_ang = abs(ball.ang);
     }
-    else if(abs(ball.ang) < 20){
-      go_ang = -0.0015 * pow(abs(ball.ang),3) + 0.090 * pow(abs(ball.ang),2) - 0.20 * abs(ball.ang);
+    else if(abs(ball.ang) < 30){  //(20,20),(30,60)
+      go_ang = (abs(ball.ang) - 15.0) * 4.0;
     }
+    // if(abs(ball.ang) < 45){
+    //   go_ang = RA_a * pow(abs(ball.ang),3) + RA_b * pow(abs(ball.ang),2) + RA_c * pow(abs(ball.ang),1) + RA_d;
+    // }
     else if(abs(ball.ang) < 90){
-      go_ang = abs(ball.ang) * RA_a;
+      go_ang = abs(ball.ang) * 2.0;
       max_val = 220;
     }
     else{
-      go_ang = abs(ball.ang) + RA_c;
+      go_ang = abs(ball.ang) + 75;
     }
 
-    if(abs(ball.world_far) < 75){
-      if(90 < abs(ball.ang)){
-        go_ang = abs(ball.ang) + RA_d;
+    if(90 < ball.world_far){
+      if(90 <= abs(ball.ang)){
+        go_ang = abs(ball.ang) + 50;
       }
     }
 
 
-    if(30 < cam_front.Size && (abs(ball.ang) < 15 || abs(cam_front.ang - ball.ang) < 10)){
-      go_ang = 0.1 * (ball.ang * ball.ang);
-      if(ball_front.readStateTimer(1) < 400){
-        max_val = 220;
+    if(30 < cam_front.Size && (abs(ball.ang) < 15 || (abs(ball.ang) < 30 && abs(cam_front.ang - ball.ang) < 10))){
+      go_ang = 0.2 * abs(ball.ang) * abs(ball.ang);
+      if(ball_front.readStateTimer(1) < 100){
+        max_val = 200;
       }
       AC_flag = 1;
       front_flag = 1;
     }
 
-    ang_now = go_ang.degree;
-    int goang_deff = abs(goang_ma.sum(ang_now - ang_old));
+    int goang_deff = abs(goang_ma.sum(go_ang.degree - ang_old));
 
     if(goang_deff < 20 && 10 < abs(ball.ang) && abs(ball.ang) < 90){
       go_ang.degree += 20;
@@ -205,10 +190,20 @@ void Attack::attack(){
     go_ang = go_ang.degree * (ball.ang < 0 ? -1 : 1);  //角度の正負を元に戻す
 
     // Serial.println();
-    if(go_flag == 1){
+    if(go_flag == 1 && Timer.read_ms() < 300){
       go_ang = ball.ang;
     }
-    ang_old = ang_now;
+    ang_old = go_ang.degree;
+
+    if(line.LINE_on){
+      A = 20;
+    }
+    else if(line.side_flag){
+      A = 21;
+    }
+    else if(ball.ball_get){
+      A = 11;
+    }
   }
 
 
@@ -226,7 +221,7 @@ void Attack::attack(){
     Serial.println();
 
     if(cam_front.on == 1){  //カメラ見てるとき
-      if(cam_front.on == 1 && (abs(cam_front.ang) < 20 || cam_front.senter)){  //正面にゴールあってゴールもある程度近くにある時
+      if(cam_front.on == 1 && (abs(cam_front.ang) < 20 || cam_front.center)){  //正面にゴールあってゴールもある程度近くにある時
         cam_front_on = 1;  //打っていいよ
         go_ang = 0;
         AC_flag = 1;
@@ -248,7 +243,7 @@ void Attack::attack(){
     CFO.enterState(cam_front_on);
     if(cam_front_on == 1){  //打っていいよフラグ
 
-      if(250 < CFO.readStateTimer()){
+      if(150 < CFO.readStateTimer()){
         kick_ = 1;  //打っていいよフラグが0.2秒立ってたら打つ
       }
       if(50 < cam_front.Size){
@@ -273,25 +268,17 @@ void Attack::attack(){
     // Serial.print(" kick_ : ");
     // Serial.print(kick_);
     // Serial.println();
-    Catch.enterState(ball.ball_get);
-    if(200 < Catch.readStateTimer(0) || line.LINE_on){
-      c = 0;
-    }
     if(line.LINE_on){
-      c = 0;
       A = 20;
     }
-  }
-
-
-
-  if(A == 12){
-    if(A != B){
-      B = A;
-      Timer.reset();
+    else if(line.side_flag){
+      A = 21;
     }
-    M_flag = 0;
+    else if(!ball.ball_get){
+      A = 10;
+    }
   }
+
 
 
 
@@ -300,49 +287,58 @@ void Attack::attack(){
     if(A != B){
       B = A;
       Timer.reset();
+      line_flag = line.switchLineflag(line.vec.return_azimuth());
+      go_ang = line.vec_go.return_azimuth();
     }
     back_flag = 1;
-    // target = Line_target_dir;
-    go_ang = line.vec_go.return_azimuth();
+    // target = Line_target_dir
 
 
-    if(line.LINE_change == -1){  //踏んでない状態から踏んでる状態になった時
+    if(Timer.read_ms() < 100){
+      go_ang = line.go_ang_first;
+    }
+    else{
+      if(line.LINE_on){
+        go_ang = line.vec_go.return_azimuth();
+      }
+      else{
+        go_ang = line.go_ang_old;
+      }
+    }
+
+
+    if((line.LINE_change == -1 || line.LINE_on == 0) && 200 < Timer.read_ms()){  //踏んでない状態から踏んでる状態になった時
+      A = 10;
       if(150 < abs(degrees(line.vec_first.return_azimuth()))){  //後ろにラインがあったら
         if(30 < abs(ball.ang) && abs(ball.ang) <= 85){
-          c = 1;
-          A = 25;  //前に行く
+          // A = 25;  //前に行く
         }
         else if(85 < abs(ball.ang) && abs(ball.ang) < 120){
-          c = 1;
-          A = 26;  //横に行く
+          // A = 26;  //横に行く
         }
       }
       else if(45 < (degrees(line.vec_first.return_azimuth())) && (degrees(line.vec_first.return_azimuth())) < 135){
         if(0 <= cam_back.ang){
-          A = 25;
-          c = 1;
+          // A = 25;
         }
       }
       else if(-135 < (degrees(line.vec_first.return_azimuth())) && (degrees(line.vec_first.return_azimuth())) < -45){
         if(cam_back.ang <= 0){
-          A = 25;
-          c = 1;
+          // A = 25;
         }
       }
       else if(abs(degrees(line.vec_first.return_azimuth())) < 45){  //前にラインがあったら
-        if(cam_front.on){  //ゴール前だったら
+        if(cam_front.center){  //ゴール前だったら
           back_count++;
           if(back_count % 4 == 0 && abs(ball.ang) < 45 && !ball.ball_get){
             A = 22;  //ボールを押し込むやつ
             Serial.println(" line_front "); 
-            c = 1;
           }
         }
-        else if(cam_front.on == 0){  //notゴール前だったら
+        else{  //notゴール前だったら
           back_count++;
           if(back_count % 4 == 0){
             A = 24;  //後ろに下がるやつ
-            c = 1;
           }
         }
       }
@@ -368,6 +364,19 @@ void Attack::attack(){
     }
     else if(line.side_flag == 4){
       go_ang = 0;
+    }
+
+
+    if(!line.side_flag && !line.LINE_on){
+      if(ball.ball_get){
+        A = 11;
+      }
+      else{
+        A = 10;
+      }
+    }
+    else if(line.LINE_on){
+      A = 20;
     }
   }
 
@@ -398,7 +407,7 @@ void Attack::attack(){
     go_ang = 180;
 
     if(!line.LINE_on){
-      c = 0;  //戻ってるけどラインを踏んでる限りこのステートから出ない
+      A = 10;  //戻ってるけどラインを踏んでる限りこのステートから出ない
     }
   }
 
@@ -409,21 +418,31 @@ void Attack::attack(){
       B = A;
       Timer.reset();
     }
-    A_24_t.reset();
     if(Timer.read_ms() < 500){
       go_ang = 180;
       // max_val = 180;
     }
     else{
       M_flag = 0;
-      if(abs(ball.ang) < 10 || ball.ball_get){
-        c = 0;
+      if(ball.ball_get){
+        A = 11;
+      }
+      else if(abs(ball.ang) < 10){
+        A = 10;
       }
     }
 
-
-    if(30 < abs(ball.ang) || 7000 < Timer.read_ms() || line.LINE_on){
-      c = 0;
+    if(line.LINE_on){
+      A = 20;
+    }
+    else if(ball.ball_get){
+      A = 11;
+    }
+    else if(abs(ball.ang) < 30){
+      A = 10;
+    }
+    else if(3000 < Timer.read_ms()){
+      A = 10;
     }
   }
 
@@ -437,7 +456,7 @@ void Attack::attack(){
     go_ang = 0;
 
     if(line.LINE_on == 1){
-      c = 0;
+      A = 20;
     }
     else if(abs(ball.ang) <= 30 || 100 <= abs(ball.ang)){
       A = 26;
@@ -457,25 +476,19 @@ void Attack::attack(){
       go_ang = 90;
     }
 
-    if(line.LINE_on || 5000 < Timer.read_ms() || abs(ball.ang) < 30 || 100 < abs(ball.ang)){
-      c = 0;
+
+    if(line.LINE_on){
+      A = 20;
+    }
+    else if(line.side_flag){
+      A = 21;
+    }
+    else if(abs(ball.ang) < 30 || 100 < abs(ball.ang) || 5000 < Timer.read_ms()){
+      A = 10;
     }
   }
 
 
-
-  if(A == 27){
-    if(A != B){
-      B = A;
-      Timer.reset();
-    }
-    if(Timer.read_ms() < 100){
-      go_ang = 180;
-    }
-    else{
-      M_flag = 0;
-    }
-  }
 
 
   //----------------------------------------------------------出力(ここで行ってるのはフラグの回収のみ)----------------------------------------------------------//
@@ -507,18 +520,20 @@ void Attack::attack(){
     AC_val = ac.getAC_val();
   }
   else if(AC_flag == 1){
-    AC_val = ac.getCam_val(-cam_front.ang) * AC_D;
+    AC_val = ac.getCam_val(-cam_front.ang) * AC_cam_coef;
   }
 
   if(back_flag){
     max_val = go_val_back;
   }
 
+  Serial.print(" A : ");
+  Serial.print(A);
+  Serial.println();
+
   Vector2D go_vec;
   go_vec.set_polar(go_ang.degree,max_val);
-  Serial.print(" go_val : ");
-  Serial.print(go_val);
-  Serial.println();
+
 
   central.set_states(go_vec,max_val,M_flag,AC_val,AC_flag,kick_);
 }
