@@ -37,6 +37,9 @@ public:
     Vector2D vec_first;
     Vector2D vec_go;
 
+    float go_ang_old;
+    float go_ang_first;
+
     State line_state;
  
     int LINE_on; //ラインがロボットの下になかったら0,あったら1にする

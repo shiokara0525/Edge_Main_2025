@@ -123,6 +123,8 @@ int LINE::getLINE_Vec() { //ラインのベクトル(距離,角度)を取得す�
       firstDir_flag = switchLineflag(ang);
       vec_first = vec;
       num_first = num;
+      vec_go = -1 * vec;
+      go_ang_first = vec_go.return_azimuth();
       // if(2 < num){
       //   vec_first.set_coodinate(0,0);
       // }
@@ -137,6 +139,7 @@ int LINE::getLINE_Vec() { //ラインのベクトル(距離,角度)を取得す�
       //   vec_go = -1 * vec;
       // }
     }
+    go_ang_old = vec_go.return_azimuth();
 
     // Serial.print(" 内積 : ");
     // Serial.print(vec * vec_first);

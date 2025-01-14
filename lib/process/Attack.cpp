@@ -155,11 +155,8 @@ void Attack::attack(){
       go_ang = abs(ball.ang) + 75;
     }
 
-    if(75 < ball.world_far){
-      if(cam_front.Size < 30 && (60 < abs(ball.ang) && abs(ball.ang) < 90)){
-        go_ang = abs(ball.ang) * 1.8;
-      }
-      else if(90 <= abs(ball.ang)){
+    if(90 < ball.world_far){
+      if(90 <= abs(ball.ang)){
         go_ang = abs(ball.ang) + 50;
       }
     }
@@ -291,13 +288,26 @@ void Attack::attack(){
       B = A;
       Timer.reset();
       line_flag = line.switchLineflag(line.vec.return_azimuth());
+      go_ang = line.vec_go.return_azimuth();
     }
     back_flag = 1;
-    // target = Line_target_dir;
-    go_ang = line.vec_go.return_azimuth();
+    // target = Line_target_dir
 
 
-    if(line.LINE_change == -1 && 50 < Timer.read_ms()){  //踏んでない状態から踏んでる状態になった時
+    if(Timer.read_ms() < 100){
+      go_ang = line.go_ang_first;
+    }
+    else{
+      if(line.LINE_on){
+        go_ang = line.vec_go.return_azimuth();
+      }
+      else{
+        go_ang = line.go_ang_old;
+      }
+    }
+
+
+    if((line.LINE_change == -1 || line.LINE_on == 0) && 200 < Timer.read_ms()){  //踏んでない状態から踏んでる状態になった時
       A = 10;
       if(150 < abs(degrees(line.vec_first.return_azimuth()))){  //後ろにラインがあったら
         if(30 < abs(ball.ang) && abs(ball.ang) <= 85){
