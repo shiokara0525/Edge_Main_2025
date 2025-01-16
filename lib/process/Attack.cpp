@@ -116,12 +116,12 @@ void Attack::attack(){
       go_flag = 0;
       if(B == 20 || B == 21){
         if(line.ang_old < 0){
-          if(-90 < ball.ang && ball.ang < 30){
+          if(-45 < ball.ang && ball.ang < 30){
             go_flag = 1;  //ライン際でボールにあてに行く
           }
         }
         else{
-          if(-30 < ball.ang && ball.ang < 90){
+          if(-30 < ball.ang && ball.ang < 45){
             go_flag = 1;  //ライン際でボールにあてに行く
           }
         }
@@ -141,18 +141,18 @@ void Attack::attack(){
     if(abs(ball.ang) < 20){
       go_ang = abs(ball.ang);
     }
-    else if(abs(ball.ang) < 30){  //(20,20),(30,60)
-      go_ang = (abs(ball.ang) - 15.0) * 4.0;
+    else if(abs(ball.ang) < 25){  //(20,20),(25,50)
+      go_ang = (abs(ball.ang) - 16.66) * 6.0;
     }
-    // if(abs(ball.ang) < 45){
-    //   go_ang = RA_a * pow(abs(ball.ang),3) + RA_b * pow(abs(ball.ang),2) + RA_c * pow(abs(ball.ang),1) + RA_d;
-    // }
-    else if(abs(ball.ang) < 90){
+    else if(abs(ball.ang) < 80){
       go_ang = abs(ball.ang) * 2.0;
       max_val = 220;
     }
+    else if(abs(ball.ang) < 90){  //(60,120) (90,160)
+      go_ang = 160;
+    }
     else{
-      go_ang = abs(ball.ang) + 75;
+      go_ang = abs(ball.ang) + 70;
     }
 
     if(90 < ball.world_far){
@@ -161,9 +161,7 @@ void Attack::attack(){
       }
     }
 
-
     if(30 < cam_front.Size && (abs(ball.ang) < 15 || (abs(ball.ang) < 30 && abs(cam_front.ang - ball.ang) < 10))){
-      go_ang = 0.2 * abs(ball.ang) * abs(ball.ang);
       if(ball_front.readStateTimer(1) < 100){
         max_val = 200;
       }

@@ -85,7 +85,7 @@ Vector2D Defence::defence(){
 
     int read_flag;  //1が真後ろ 2が後ろめ 3が前 0が真横
 
-    if(150 < abs(go_ang.degree)){       //進む角度が真後ろにあるとき
+    if(160 < abs(go_ang.degree)){       //進む角度が真後ろにあるとき
       read_flag = READ_BACK;
       go_ang += 180;
     }
@@ -133,7 +133,7 @@ Vector2D Defence::defence(){
     for(int i = 0; i < 2; i++){
       int dif_val = abs(ball.ang - go_border[i]);
       if(dif_val < stop_range && read_flag != READ_BACK && cam_back.on){  //正面方向にボールがあったら停止するよ
-        if(ball_fast.readStateTimer(0) < 100){
+        if(ball_fast.readStateTimer(0) < 100 && abs(ball.ang) < 45){
           Stop_flag = STOP_NO_FAST;  //ボールの速度を原因にストップしてないフラグ
         }
         else{

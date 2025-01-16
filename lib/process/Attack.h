@@ -43,6 +43,8 @@ class Attack{
         int go_val;
         int go_val_back = 255;
 
+        State face_goal;
+
 
         timer Timer;
         State CFO;
