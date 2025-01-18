@@ -365,16 +365,20 @@ void Attack::attack(){
     }
 
 
-    if(!line.side_flag && !line.LINE_on){
-      if(ball.ball_get){
-        A = 11;
-      }
-      else{
-        A = 10;
+    if(100 < Timer.read_ms()){
+      if(!line.side_flag && !line.LINE_on){
+        if(ball.ball_get){
+          A = 11;
+        }
+        else{
+          A = 10;
+        }
       }
     }
-    else if(line.LINE_on){
-      A = 20;
+    else{
+      if(line.LINE_on){
+        A = 20;
+      }
     }
   }
 
