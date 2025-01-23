@@ -292,14 +292,11 @@ void Attack::attack(){
     // target = Line_target_dir
 
 
-    if(Timer.read_ms() < 100){
-      go_ang = line.go_ang_first;
+    if(line.LINE_on){
+      go_ang = line.vec_go.return_azimuth();
     }
     else{
-      if(line.LINE_on){
-        go_ang = line.vec_go.return_azimuth();
-      }
-      else{
+      if(Timer.read_ms() < 30){
         go_ang = line.go_ang_old;
       }
     }
@@ -365,16 +362,20 @@ void Attack::attack(){
     }
 
 
-    if(!line.side_flag && !line.LINE_on){
-      if(ball.ball_get){
-        A = 11;
-      }
-      else{
-        A = 10;
+    if(100 < Timer.read_ms()){
+      if(!line.side_flag && !line.LINE_on){
+        if(ball.ball_get){
+          A = 11;
+        }
+        else{
+          A = 10;
+        }
       }
     }
-    else if(line.LINE_on){
-      A = 20;
+    else{
+      if(line.LINE_on){
+        A = 20;
+      }
     }
   }
 
