@@ -292,14 +292,11 @@ void Attack::attack(){
     // target = Line_target_dir
 
 
-    if(Timer.read_ms() < 100){
-      go_ang = line.go_ang_first;
+    if(line.LINE_on){
+      go_ang = line.vec_go.return_azimuth();
     }
     else{
-      if(line.LINE_on){
-        go_ang = line.vec_go.return_azimuth();
-      }
-      else{
+      if(Timer.read_ms() < 30){
         go_ang = line.go_ang_old;
       }
     }
