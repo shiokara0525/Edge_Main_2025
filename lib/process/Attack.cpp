@@ -155,6 +155,13 @@ void Attack::attack(){
       go_ang = abs(ball.ang) + 70;
     }
 
+    if(-10 < ball.ang && ball.ang < 0){
+      go_ang = abs(ball.ang) * 1.2;
+    }
+    else if(-10 < ball.ang && ball.ang < -50){
+      go_ang = abs(ball.ang) * 2.7;
+    }
+
     if(90 < ball.world_far){
       if(90 <= abs(ball.ang)){
         go_ang = abs(ball.ang) + 50;
@@ -293,10 +300,15 @@ void Attack::attack(){
 
 
     if(line.LINE_on){
-      go_ang = line.vec_go.return_azimuth();
+      if(Timer.read_ms() < 30){
+        go_ang = line.go_ang_first;
+      }
+      else{
+        go_ang = line.vec_go.return_azimuth();
+      }
     }
     else{
-      if(Timer.read_ms() < 30){
+      if(Timer.read_ms() < 200){
         go_ang = line.go_ang_old;
       }
     }
