@@ -155,12 +155,6 @@ void Attack::attack(){
       go_ang = abs(ball.ang) + 70;
     }
 
-    if(-10 < ball.ang && ball.ang < 0){
-      go_ang = abs(ball.ang) * 1.2;
-    }
-    else if(-10 < ball.ang && ball.ang < -50){
-      go_ang = abs(ball.ang) * 2.7;
-    }
 
     if(90 < ball.world_far){
       if(90 <= abs(ball.ang)){
@@ -168,7 +162,7 @@ void Attack::attack(){
       }
     }
 
-    if(30 < cam_front.Size && (abs(ball.ang) < 15 || (abs(ball.ang) < 30 && abs(cam_front.ang - ball.ang) < 10))){
+    if((30 < cam_front.Size && (abs(ball.ang) < 15 || (abs(ball.ang) < 30 && abs(cam_front.ang - ball.ang) < 10)))){
       if(ball_front.readStateTimer(1) < 100){
         max_val = 200;
       }
