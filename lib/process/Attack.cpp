@@ -129,6 +129,7 @@ void Attack::attack(){
       B = A;
       Timer.reset();
     }
+    Vector2D go_vector;
 
     if(90 < abs(ball.ang)){
       go_flag = 0;
@@ -170,19 +171,15 @@ void Attack::attack(){
       front_flag = 1;
     }
 
-    int goang_deff = abs(goang_ma.sum(go_ang.degree - ang_old));
-
-    if(goang_deff < 20 && 10 < abs(ball.ang) && abs(ball.ang) < 90){
-      go_ang.degree += 20;
-    }
+    go_vector.set_polar(go_ang.degree,1.0);
+    go_vector = go_vector + ball.vec_velocity;
+    go_ang = go_vector.return_azimuth();
 
 
     Serial.print(" ball_ang : ");
     Serial.print(ball.ang);
     Serial.print(" ang : ");
     Serial.print(go_ang.degree);
-    Serial.print(" deff : ");
-    Serial.println(goang_deff);
 
     ball_front.enterState(front_flag);
 
