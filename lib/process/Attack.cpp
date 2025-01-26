@@ -130,6 +130,7 @@ void Attack::attack(){
       Timer.reset();
     }
     Vector2D go_vector;
+    Vector2D go_vector_old;
 
     if(90 < abs(ball.ang)){
       go_flag = 0;
@@ -172,7 +173,8 @@ void Attack::attack(){
     }
 
     go_vector.set_polar(go_ang.degree,1.0);
-    go_vector = go_vector + ball.vec_velocity;
+    go_vector_old.set_polar(ang_old,1.0);
+    go_vector = go_vector + (ball.vec_velocity.normalize() - go_vector_old);
     go_ang = go_vector.return_azimuth();
 
 
