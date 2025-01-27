@@ -38,6 +38,7 @@ void Attack::available_set(int *check_val){ //変数を受け取ったり三次�
   play_time.reset();
   first_ang = ac.dir_n;
   goang_ma.setLenth(100);
+  face_goal.enterState(0);
   
   A = 10;
 }
@@ -164,12 +165,21 @@ void Attack::attack(){
       }
     }
 
-    if((30 < cam_front.Size && (abs(ball.ang) < 15 || (abs(ball.ang) < 30 && abs(cam_front.ang - ball.ang) < 10)))){
-      if(ball_front.readStateTimer(1) < 100){
+    if(face_goal.getCurrentState() == 0){
+      if((30 < cam_front.Size && (abs(ball.ang) < 15 || (abs(ball.ang) < 30 && abs(cam_front.ang - ball.ang) < 10)))){
+        face_goal.enterState(1);
+      }
+    }
+    else{
+      if(face_goal.readStateTimer(1) < 100){
         max_val = 200;
       }
       AC_flag = 1;
       front_flag = 1;
+
+      if(45 < abs(ball.ang)){
+        face_goal.enterState(0);
+      }
     }
 
     go_vector.set_polar(go_ang.degree,1.0);
@@ -183,7 +193,6 @@ void Attack::attack(){
     Serial.print(" ang : ");
     Serial.print(go_ang.degree);
 
-    ball_front.enterState(front_flag);
 
     go_ang = go_ang.degree * (ball.ang < 0 ? -1 : 1);  //角度の正負を元に戻す
 
