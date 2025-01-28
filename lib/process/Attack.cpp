@@ -130,8 +130,9 @@ void Attack::attack(){
       B = A;
       Timer.reset();
     }
-    Vector2D go_vector;
-    Vector2D go_vector_old;
+    Vector2D go_vector(go_ang.degree,24.0 ,0);
+    Vector2D go_vector_old(ang_old,24.0 ,0);
+    Vector2D world_ball_velocity;
 
     if(90 < abs(ball.ang)){
       go_flag = 0;
@@ -139,17 +140,19 @@ void Attack::attack(){
 
 
     // float confidencial_num = (ball.vec.return_magnitude() - BALL_MAX_NUM * 0.8) * 0.025;
-    int front_flag = 0;
 
     if(abs(ball.ang) < 20){
       go_ang = abs(ball.ang);
     }
-    else if(abs(ball.ang) < 25){  //(20,20),(25,50)
-      go_ang = (abs(ball.ang) - 16.66) * 6.0;
+    else if(abs(ball.ang) < 25){  //(20,20),(30,50)
+      go_ang = (abs(ball.ang) - 13.33) * 3.0;
     }
     else if(abs(ball.ang) < 80){
       go_ang = abs(ball.ang) * 2.0;
       max_val = 220;
+      if(24 < ball.vec_velocity.return_magnitude()){
+        go_ang += 30;
+      }
     }
     else if(abs(ball.ang) < 90){  //(60,120) (90,160)
       go_ang = 160;
@@ -175,24 +178,11 @@ void Attack::attack(){
         max_val = 200;
       }
       AC_flag = 1;
-      front_flag = 1;
 
-      if(45 < abs(ball.ang)){
+      if(15 < abs(ball.ang)){
         face_goal.enterState(0);
       }
     }
-
-    go_vector.set_polar(go_ang.degree,1.0);
-    go_vector_old.set_polar(ang_old,1.0);
-    go_vector = go_vector + (ball.vec_velocity.normalize() - go_vector_old);
-    go_ang = go_vector.return_azimuth();
-
-
-    Serial.print(" ball_ang : ");
-    Serial.print(ball.ang);
-    Serial.print(" ang : ");
-    Serial.print(go_ang.degree);
-
 
     go_ang = go_ang.degree * (ball.ang < 0 ? -1 : 1);  //角度の正負を元に戻す
 
@@ -540,9 +530,9 @@ void Attack::attack(){
     max_val = go_val_back;
   }
 
-  Serial.print(" A : ");
-  Serial.print(A);
-  Serial.println();
+  // Serial.print(" A : ");
+  // Serial.print(A);
+  // Serial.println();
 
   Vector2D go_vec;
   go_vec.set_polar(go_ang.degree,max_val);
