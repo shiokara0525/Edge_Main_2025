@@ -144,18 +144,18 @@ void Attack::attack(){
     if(abs(ball.ang) < 20){
       go_ang = abs(ball.ang);
     }
-    else if(abs(ball.ang) < 30){  //(20,20),(30,60)
-      go_ang = (abs(ball.ang) - 25) * 4.0;
+    else if(abs(ball.ang) < 30){  //(20,20),(30,52.5)
+      go_ang = (abs(ball.ang) - 12) * 2.5;
     }
     else if(abs(ball.ang) < 80){
-      go_ang = abs(ball.ang) * 2.0;
+      go_ang = abs(ball.ang) * 1.5;
       max_val = 220;
       if(24 < ball.vec_velocity.return_magnitude()){
         go_ang += 30;
       }
     }
-    else if(abs(ball.ang) < 90){  //(60,120) (90,160)
-      go_ang = 160;
+    else if(abs(ball.ang) < 100){  //(80,120) (100,160)
+      go_ang = abs(ball.ang - 20) * 2.0;
     }
     else{
       go_ang = abs(ball.ang) + 70;
