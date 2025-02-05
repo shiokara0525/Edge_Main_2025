@@ -146,6 +146,9 @@ void Attack::attack(){
     }
     else if(abs(ball.ang) < 30){  //(20,20),(30,52.5)
       go_ang = (abs(ball.ang) - 12) * 2.5;
+      if(24 < ball.vec_velocity.return_magnitude()){
+        go_ang += 30;
+      }
     }
     else if(abs(ball.ang) < 80){
       go_ang = abs(ball.ang) * 1.5;
