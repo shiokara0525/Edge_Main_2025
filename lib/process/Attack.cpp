@@ -150,15 +150,21 @@ void Attack::attack(){
         go_ang += 30;
       }
     }
-    else if(abs(ball.ang) < 75){
+    else if(abs(ball.ang) < 75){  //(30,60),(67.5,135)
       go_ang = abs(ball.ang) * 2.0;
       max_val = 220;
     }
-    else if(abs(ball.ang) < 90){  //(75,150) (90,150)
-      go_ang = 150;
+    else if(abs(ball.ang) < 67.5){  //(67.5,135) (90,135)
+      go_ang = 135;
     }
     else{
-      go_ang = abs(ball.ang) + 60;
+      if(80 < ball.world_far){    //(90,135) (180,255)
+        go_ang = 1.33 * (abs(ball.ang) - 90) + 135;
+      }
+      else{                       //(90,150) (180,240)
+        go_ang =(abs(ball.ang)) + 45;
+      }
+      
     }
 
 
