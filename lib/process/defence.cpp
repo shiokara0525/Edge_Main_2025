@@ -129,7 +129,7 @@ Vector2D Defence::defence(){
     // Serial.print(" godir : ");
     // Serial.println(go_ang.degree);
 
-    ball_fast.enterState(ball.vec_velocity.return_magnitude() > 24);
+    ball_fast.enterState(ball.vec_velocity.return_magnitude() > 30);
     for(int i = 0; i < 2; i++){
       int dif_val = abs(ball.ang - go_border[i]);
       if(dif_val < stop_range && read_flag != READ_BACK && cam_back.on){  //正面方向にボールがあったら停止するよ
@@ -210,11 +210,11 @@ Vector2D Defence::defence(){
       line_none_flag = 0;
     }
 
-    go_ang = abs(ball.ang);
+    go_ang = abs(ball.ang) * 1.35;
 
     go_ang = go_ang.degree * (ball.ang < 0 ? -1 : 1);
     moving_sort = MOVING_NO_LINE;
-    max_val -= 30;
+    max_val -= 45;
 
     if(!line.LINE_on){
       line_none_flag = 1;
@@ -261,7 +261,7 @@ Vector2D Defence::defence(){
       line_none_flag = 1;
     }
 
-    if(350 < Timer.read_ms()){
+    if(300 < Timer.read_ms()){
       kick_ = 1;
     }
 
@@ -276,7 +276,7 @@ Vector2D Defence::defence(){
         Serial.println(" !!! 2 !!! ");
       }
     }
-    else if((500 < Timer.read_ms()) && line.LINE_on == 0 && 90 < abs(line.ang_old)){
+    else if((350 < Timer.read_ms()) && line.LINE_on == 0 && 90 < abs(line.ang_old)){
       A = 15;
       A_15_flag = 6;
       Serial.println(" !!! 3 !!! ");
@@ -397,7 +397,7 @@ Vector2D Defence::defence(){
     AC_val = ac.getAC_val();
   }
   else if(AC_flag == 1){
-    AC_val = ac.getCam_val(-cam_front.ang);
+    AC_val = ac.getCam_val(-cam_front.ang) * 1.5;
   }
 
   Serial.print(" A : ");
