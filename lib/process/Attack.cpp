@@ -142,10 +142,10 @@ void Attack::attack(){
     // float confidencial_num = (ball.vec.return_magnitude() - BALL_MAX_NUM * 0.8) * 0.025;
 
     if(abs(ball.ang) < 20){
-      go_ang = abs(ball.ang);
+      go_ang = abs(ball.ang) * 1.2;
     }
-    else if(abs(ball.ang) < 30){  //(20,30),(30,60)
-      go_ang = (abs(ball.ang) - 15) * 4.0;
+    else if(abs(ball.ang) < 30){  //(20,24),(30,60)
+      go_ang = (abs(ball.ang) - 20) * 3.6 + 24;
       if(24 < ball.vec_velocity.return_magnitude()){
         go_ang += 30;
       }
