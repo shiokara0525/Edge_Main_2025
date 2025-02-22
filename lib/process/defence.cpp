@@ -184,7 +184,7 @@ Vector2D Defence::defence(){
 
     Center.enterState(is_center);
 
-    if(500 < Center.readStateTimer(1) && 2000 < A_12_t.read_ms()){
+    if(400 < Center.readStateTimer(1) && 2000 < A_12_t.read_ms()){
       A = 12;
       c = 1;
       Center.enterState(0);
@@ -210,11 +210,11 @@ Vector2D Defence::defence(){
       line_none_flag = 0;
     }
 
-    go_ang = abs(ball.ang) * 1.35;
+    go_ang = abs(ball.ang) * 1.15;
 
     go_ang = go_ang.degree * (ball.ang < 0 ? -1 : 1);
     moving_sort = MOVING_NO_LINE;
-    max_val -= 45;
+    max_val -= 35;
 
     if(!line.LINE_on){
       line_none_flag = 1;
@@ -397,7 +397,7 @@ Vector2D Defence::defence(){
     AC_val = ac.getAC_val();
   }
   else if(AC_flag == 1){
-    AC_val = ac.getCam_val(-cam_front.ang) * 1.5;
+    AC_val = ac.getCam_val(-cam_front.ang) * 1.2;
   }
 
   Serial.print(" A : ");
