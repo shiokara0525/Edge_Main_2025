@@ -38,6 +38,7 @@ void Attack::available_set(int *check_val){ //変数を受け取ったり三次�
   play_time.reset();
   first_ang = ac.dir_n;
   goang_ma.setLenth(100);
+  face_goal.enterState(0);
   
   A = 10;
 }
@@ -129,6 +130,9 @@ void Attack::attack(){
       B = A;
       Timer.reset();
     }
+    Vector2D go_vector(go_ang.degree,24.0 ,0);
+    Vector2D go_vector_old(ang_old,24.0 ,0);
+    Vector2D world_ball_velocity;
 
     if(90 < abs(ball.ang)){
       go_flag = 0;
@@ -136,23 +140,36 @@ void Attack::attack(){
 
 
     // float confidencial_num = (ball.vec.return_magnitude() - BALL_MAX_NUM * 0.8) * 0.025;
-    int front_flag = 0;
 
     if(abs(ball.ang) < 20){
-      go_ang = abs(ball.ang);
+      go_ang = abs(ball.ang) * 1.2;
     }
-    else if(abs(ball.ang) < 25){  //(20,20),(25,50)
-      go_ang = (abs(ball.ang) - 16.66) * 6.0;
+    else if(abs(ball.ang) < 30){  //(20,24),(30,60)
+      go_ang = (abs(ball.ang) - 20) * 3.6 + 24;
+      if(24 < ball.vec_velocity.return_magnitude()){
+        go_ang += 30;
+      }
     }
-    else if(abs(ball.ang) < 80){
+    else if(abs(ball.ang) < 75){  //(30,60),(67.5,135)
       go_ang = abs(ball.ang) * 2.0;
       max_val = 220;
     }
-    else if(abs(ball.ang) < 90){  //(60,120) (90,160)
-      go_ang = 160;
+    else if(abs(ball.ang) < 67.5){  //(67.5,135) (90,135)
+      go_ang = 135;
     }
     else{
-      go_ang = abs(ball.ang) + 70;
+      if(80 < ball.world_far){    //(90,135) (180,255)
+        go_ang = 1.33 * (abs(ball.ang) - 90) + 135;
+      }
+      else{                       //(90,150) (180,240)
+        go_ang =(abs(ball.ang)) + 45;
+      }
+      
+    }
+
+
+    if((30 < abs(ball.ang) && abs(ball.ang) < 150) && 24 < ball.vec_velocity.return_magnitude()){
+      go_ang += 30;
     }
 
 
@@ -162,29 +179,21 @@ void Attack::attack(){
       }
     }
 
-    if((30 < cam_front.Size && (abs(ball.ang) < 15 || (abs(ball.ang) < 30 && abs(cam_front.ang - ball.ang) < 10)))){
-      if(ball_front.readStateTimer(1) < 100){
+    if(face_goal.getCurrentState() == 0){
+      if((30 < cam_front.Size && (abs(ball.ang) < 15 || (abs(ball.ang) < 30 && abs(cam_front.ang - ball.ang) < 10)))){
+        face_goal.enterState(1);
+      }
+    }
+    else{
+      if(face_goal.readStateTimer(1) < 100){
         max_val = 200;
       }
       AC_flag = 1;
-      front_flag = 1;
+
+      if(15 < abs(ball.ang)){
+        face_goal.enterState(0);
+      }
     }
-
-    int goang_deff = abs(goang_ma.sum(go_ang.degree - ang_old));
-
-    if(goang_deff < 20 && 10 < abs(ball.ang) && abs(ball.ang) < 90){
-      go_ang.degree += 20;
-    }
-
-
-    Serial.print(" ball_ang : ");
-    Serial.print(ball.ang);
-    Serial.print(" ang : ");
-    Serial.print(go_ang.degree);
-    Serial.print(" deff : ");
-    Serial.println(goang_deff);
-
-    ball_front.enterState(front_flag);
 
     go_ang = go_ang.degree * (ball.ang < 0 ? -1 : 1);  //角度の正負を元に戻す
 
@@ -532,9 +541,9 @@ void Attack::attack(){
     max_val = go_val_back;
   }
 
-  Serial.print(" A : ");
-  Serial.print(A);
-  Serial.println();
+  // Serial.print(" A : ");
+  // Serial.print(A);
+  // Serial.println();
 
   Vector2D go_vec;
   go_vec.set_polar(go_ang.degree,max_val);

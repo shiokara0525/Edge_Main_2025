@@ -51,8 +51,6 @@ class Attack{
 
         byte return_byte[4];
 
-        State ball_front;
-
         MA goang_ma;
     public:
         void attack();
