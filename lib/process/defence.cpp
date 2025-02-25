@@ -214,7 +214,7 @@ Vector2D Defence::defence(){
 
     go_ang = go_ang.degree * (ball.ang < 0 ? -1 : 1);
     moving_sort = MOVING_NO_LINE;
-    max_val -= 35;
+    max_val -= 25;
 
     if(!line.LINE_on){
       line_none_flag = 1;

@@ -45,7 +45,7 @@ class Defence{
         int A = 0;
         int B = 999;
         int c = 0;
-        int stop_range = 20;
+        int stop_range = 10;
         const int far_th = 130;
         int go_val = 220;
 
