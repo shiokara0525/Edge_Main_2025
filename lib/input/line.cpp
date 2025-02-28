@@ -20,6 +20,9 @@ int LINE::getLINE_Vec() { //ラインのベクトル(距離,角度)を取得す�
   int flag = 0;
   int block_first[Long];
   int block_last[Long];
+  int empty_range[Long] = {0,0,0,0,0};
+  int bigest_empty_range = 0;
+  int bigest_empty_num = 0;
   int block_num = -1;
   Vector2D block[Long];
 
@@ -42,6 +45,9 @@ int LINE::getLINE_Vec() { //ラインのベクトル(距離,角度)を取得す�
         block_first[block_num] = i;
         flag = 1;
       }
+      else{
+        empty_range[block_num + 1]++;
+      }
     }
     else{
       if(data_on[i] == 0){
@@ -59,6 +65,10 @@ int LINE::getLINE_Vec() { //ラインのベクトル(距離,角度)を取得す�
 
       if(data_on[23] == 1 && data_on[0] == 0){
         block_last[block_num] = 23;
+      }
+
+      if(data_on[23] == 0 && data_on[0] == 0){
+        empty_range[0] += empty_range[block_num + 1];
       }
     }
   }
@@ -130,7 +140,7 @@ int LINE::getLINE_Vec() { //ラインのベクトル(距離,角度)を取得す�
       // }
     }
     vec_go = -1 * vec;
-    if(vec * vec_first < 0){
+    if(vec.normalize() * vec_first.normalize() < -0.5){
       vec_go = vec;
     }
     else if(vec * vec_first == 0){
