@@ -338,16 +338,12 @@ void Attack::attack(){
         }
       }
       else if(abs(degrees(line.vec_first.return_azimuth())) < 45){  //前にラインがあったら
-        if(cam_front.center){  //ゴール前だったら
-          back_count++;
-          if(back_count % 4 == 0 && abs(ball.ang) < 45 && !ball.ball_get){
-            A = 22;  //ボールを押し込むやつ
-            Serial.println(" line_front "); 
-          }
+        if(cam_front.on && abs(ball.ang) < 45){  //ゴール前だったら
+          A = 22;  //ボールを押し込むやつ
         }
         else{  //notゴール前だったら
           back_count++;
-          if(back_count % 4 == 0){
+          if(back_count % 2 == 0){
             A = 24;  //後ろに下がるやつ
           }
         }
@@ -403,11 +399,18 @@ void Attack::attack(){
     }
     max_val = 150;
     go_ang = 0;
-  
-    if((line.LINE_on == 1 && (line.dis_X < -0.75 || (30 <= abs(line.ang) && abs(line.ang) <= 150))) || 5000 < Timer.read_ms() || 60 < abs(ball.ang)){
+
+    if(ball.ball_get){
+      kick_ = 1;
+    }
+
+    if(line.vec.return_y() < -1.5){
       A = 23;
     }
-    if(400 < Timer.read_ms()){
+    if(45 < abs(line.vec.return_azimuth()) && abs(line.vec.return_azimuth()) < 135){
+      A = 23;
+    }
+    if(200 < Timer.read_ms() && line.LINE_on == 0){
       A = 23;
     }
   }
@@ -432,7 +435,7 @@ void Attack::attack(){
       B = A;
       Timer.reset();
     }
-    if(Timer.read_ms() < 500){
+    if(Timer.read_ms() < 400){
       go_ang = 180;
       // max_val = 180;
     }
@@ -441,19 +444,13 @@ void Attack::attack(){
       if(ball.ball_get){
         A = 11;
       }
-      else if(abs(ball.ang) < 10){
+      else if(abs(ball.ang) < 45){
         A = 10;
       }
     }
 
     if(line.LINE_on){
       A = 20;
-    }
-    else if(ball.ball_get){
-      A = 11;
-    }
-    else if(abs(ball.ang) < 30){
-      A = 10;
     }
     else if(3000 < Timer.read_ms()){
       A = 10;
