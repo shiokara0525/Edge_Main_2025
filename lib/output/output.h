@@ -5,3 +5,5 @@
 
 extern Kicker kicker;
 extern motor_attack MOTOR;
+
+//ブザーはD33

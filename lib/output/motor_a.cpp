@@ -11,7 +11,7 @@ motor_attack::motor_attack(){
     Motor[i].setLenth(motor_max);
   }
   for(int i = 2; i < 12; i++){
-    analogWriteFrequency(i,90000);
+    analogWriteFrequency(i,80000);
   }
     //モーターのピンと行列式に使う定数の設定
 }
