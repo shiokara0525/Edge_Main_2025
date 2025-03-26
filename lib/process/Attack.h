@@ -31,6 +31,7 @@ class Attack{
         int back_count = 0;
         int go_flag = 0;     //ライン際でボールにアタックするかしないか
         int back_flag = 0;   //ラインから逃げるときは問答無用で出力マックス
+        int line_first_dir = 0;
 
 
         int rake_flag = 0;   //ボールの書き出し

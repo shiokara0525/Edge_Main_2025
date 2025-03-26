@@ -46,7 +46,6 @@ public:
     int LINE_on_old = 999;
     int LINE_change = 0;
     int line_flag = 0;
-    int firstDir_flag = 0;
 
 private:
     int A = 0;

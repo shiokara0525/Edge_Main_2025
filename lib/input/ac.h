@@ -10,6 +10,7 @@ public:
   double getAC_val(); //姿勢制御用の値返す関数
   float getCam_val(float);
   float getnowdir();
+  float getnow_n_dir();
   int flag = 0;  //モーターが突然反転しないようにするやつ
   void print();  //姿勢制御関連のやつを表示
   void setup();  //姿勢制御のセットアップ

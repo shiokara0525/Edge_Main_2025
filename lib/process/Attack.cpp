@@ -155,7 +155,7 @@ void Attack::attack(){
       max_val = 200;
     }
     else{
-      go_ang = 1.25 * (abs(ball.ang) - 90) + 135;
+      go_ang = 1.30 * (abs(ball.ang) - 90) + 135;
       if(ball.world_far > 140){
         go_ang = abs(ball.ang) + 45;
       }
@@ -279,10 +279,13 @@ void Attack::attack(){
       Timer.reset();
       line_flag = line.switchLineflag(line.vec.return_azimuth());
       go_ang = line.vec_go.return_azimuth();
+      line_first_dir = ac.getnow_n_dir();
     }
     back_flag = 1;
-    // target = Line_target_dir
 
+    if(cam_front.on){
+      target = line_first_dir;
+    }
 
     if(line.LINE_on){
       if(Timer.read_ms() < 30){
@@ -365,10 +368,8 @@ void Attack::attack(){
         }
       }
     }
-    else{
-      if(line.LINE_on){
-        A = 20;
-      }
+    if(line.LINE_on){
+      A = 20;
     }
   }
 
@@ -378,7 +379,9 @@ void Attack::attack(){
     if(A != B){
       B = A;
       Timer.reset();
+      line_first_dir = ac.getnow_n_dir();
     }
+    target = line_first_dir;
     max_val = 150;
     go_ang = 0;
 
@@ -403,6 +406,7 @@ void Attack::attack(){
     if(A != B){
       B = A;
     }
+    target = line_first_dir;
     go_ang = 180;
 
     if(!line.LINE_on){
@@ -420,6 +424,9 @@ void Attack::attack(){
     if(Timer.read_ms() < 400){
       go_ang = 180;
       // max_val = 180;
+    }
+    else if(Timer.read_ms() < 450){
+      go_ang = 0;
     }
     else{
       M_flag = 0;

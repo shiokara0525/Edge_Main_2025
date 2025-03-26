@@ -45,6 +45,10 @@ int Cam::getCamdata(){
             else{
                 center = 0;
             }
+            
+            if(50 < abs(ang)){
+                on = 0;
+            }
             on = 1;
             return 1;
         }
@@ -58,6 +62,10 @@ int Cam::getCamdata(){
             }
             else{
                 center = 0;
+            }
+            
+            if(50 < abs(ang)){
+                on = 0;
             }
             on = 1;
             return 1;

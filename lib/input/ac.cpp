@@ -64,6 +64,18 @@ float AC::getnowdir(){
 }
 
 
+float AC::getnow_n_dir(){
+  bno.getEvent(&event);
+  dir = event.orientation.x - dir_target;
+  dir_n = event.orientation.x;
+  if(180 < abs(dir)){
+    dir += (dir < 0 ? 360 : -360);
+  }
+  
+  return dir_n;
+}
+
+
 void AC::print(){  //現在の角度、正面方向、姿勢制御の最終的な値を表示
   Serial.print(" 角度 : ");
   Serial.print(dir);
