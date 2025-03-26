@@ -12,8 +12,8 @@ int ESP_communicate::get_message_to_ESP(const char* message,byte (&send_content)
   }
   else if(strcmp(message,"BALL") == 0){
     flag = 2;
-    send[0] = ball.vec.return_x();
-    send[1] = ball.vec.return_y();
+    send[0] = ball.world_vec.return_x();
+    send[1] = ball.world_vec.return_y();
   }
   else if(strcmp(message,"LINE") == 0){
     flag = 3;

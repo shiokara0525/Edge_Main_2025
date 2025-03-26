@@ -108,6 +108,9 @@ void Attack::attack(){
         A = 10;
       }
     }
+    else if(line.LINE_on){
+      A = 20;
+    }
   }
 
 
@@ -141,35 +144,20 @@ void Attack::attack(){
 
     // float confidencial_num = (ball.vec.return_magnitude() - BALL_MAX_NUM * 0.8) * 0.025;
 
-    if(abs(ball.ang) < 30){
-      go_ang = abs(ball.ang) * 2.0;
+    if(abs(ball.ang) < 15){
+      go_ang = abs(ball.ang);
     }
-    else if(abs(ball.ang) < 67.5){  //(30,60),(60,120)
-      go_ang = abs(ball.ang) * 2.0;
-      max_val = 220;
+    else if(abs(ball.ang) < 45){  //(15,15),(45,90)
+      go_ang = (abs(ball.ang) - 15) * 2.5 + 15;
     }
-    else if(abs(ball.ang) < 90){  //(60,120) (90,135)
-      go_ang = 135;
+    else if(abs(ball.ang) < 90){  //(45,90),(90,135)
+      go_ang = (abs(ball.ang) - 45) + 90;
+      max_val = 200;
     }
-    else{  //()
-      // if(80 < ball.world_far){    //(90,135) (180,270)
-      //   go_ang = 1.5 * (abs(ball.ang) - 90) + 135;
-      // }
-      // else{                       //(90,150) (180,240)
-      //   go_ang =(abs(ball.ang)) + 45;
-      // }
-      go_ang = 1.5 * (abs(ball.ang) - 90) + 135;
-    }
-
-
-    if((30 < abs(ball.ang) && abs(ball.ang) < 150) && 24 < ball.vec_velocity.return_magnitude()){
-      go_ang += 30;
-    }
-
-
-    if(90 < ball.world_far){
-      if(90 <= abs(ball.ang)){
-        go_ang = abs(ball.ang) + 50;
+    else{
+      go_ang = 1.25 * (abs(ball.ang) - 90) + 135;
+      if(ball.world_far > 140){
+        go_ang = abs(ball.ang) + 45;
       }
     }
 
@@ -446,7 +434,7 @@ void Attack::attack(){
     if(line.LINE_on){
       A = 20;
     }
-    else if(3000 < Timer.read_ms()){
+    else if(1000 < Timer.read_ms()){
       A = 10;
     }
   }

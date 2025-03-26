@@ -9,6 +9,7 @@
 #include"central_availables.h" //ロボットの状態の一番下の部分に使う変数のクラス定義
 
 timer MOTOR_time;
+int MOTOR_test_num;
 
 
 
@@ -98,6 +99,7 @@ void loop(){
       Serial8.write(1);
       Serial8.write(37);
       MOTOR_time.reset();
+      MOTOR_test_num = 0;
     }
 
     if(central.test_mode == 0){
@@ -106,24 +108,26 @@ void loop(){
       central.set_states(go_vec,200,MOTOR_ON,AC_val,AC_ALL,0);
     }
     else if(central.test_mode == 1){
-      int TIME = MOTOR_time.read_ms();
-      Serial.print(" MOTOR ");
-      Serial.print(TIME);
-      Serial.println();
-
-      for(int i = 0; i < 4; i++){
-        if(TIME < 100){
-          central.set_states_no_output();
-          break;
-        }
-        else if(TIME < 500){
-          central.set_states_MOTOR_test(i);
-          break;
-        }
-        else{
-          TIME -= 500;
-        }
-      }
+      // int TIME = MOTOR_time.read_ms();
+      // Serial.print(" MOTOR: ");
+      // Serial.print(TIME);
+      // Serial.println();
+      // if(TIME < 200){
+      //   central.set_states_no_output();
+      // }
+      // else if(TIME < 1200){
+      //   central.set_states_MOTOR_test(MOTOR_test_num);
+      // }
+      // else{
+      //   MOTOR_time.reset();
+      //   MOTOR_test_num++;
+      //   if(4 <= MOTOR_test_num){
+      //     MOTOR_test_num = 0;
+      //   }
+      //   central.set_states_no_output();
+      // }
+      go_vec.set_polar(180,1.0);
+      central.set_states(go_vec,200,MOTOR_ON,0,AC_ALL,0);
     }
     else if(central.test_mode == 3){
       float AC_val = ac.getAC_val();
@@ -171,7 +175,7 @@ void loop(){
     else{
       for(int i = 0; i < 4; i++){
         if(central.return_Motor_on() == 3 + i){
-          MOTOR.Moutput(central.return_Motor_max(),i);
+          MOTOR.Moutput(i,200);
         }
       }
     }
@@ -182,6 +186,9 @@ void loop(){
     MOTOR.motor_0();
     kicker.stop();
   }
+
+  Serial.print(" Mode: ");
+  Serial.println(central.Mode);
 }
 
 
