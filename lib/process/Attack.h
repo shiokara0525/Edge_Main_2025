@@ -46,6 +46,8 @@ class Attack{
 
         State face_goal;
 
+        int wall_around = 0;  //壁際のフラグ
+
 
         timer Timer;
         State CFO;

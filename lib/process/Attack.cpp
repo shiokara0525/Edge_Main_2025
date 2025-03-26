@@ -119,16 +119,7 @@ void Attack::attack(){
     if(A != B){
       go_flag = 0;
       if(B == 20 || B == 21){
-        if(line.ang_old < 0){
-          if(-45 < ball.ang && ball.ang < 30){
-            go_flag = 1;  //ライン際でボールにあてに行く
-          }
-        }
-        else{
-          if(-30 < ball.ang && ball.ang < 45){
-            go_flag = 1;  //ライン際でボールにあてに行く
-          }
-        }
+        wall_around = 1;
       }
       B = A;
       Timer.reset();
@@ -147,7 +138,7 @@ void Attack::attack(){
     if(abs(ball.ang) < 15){
       go_ang = abs(ball.ang);
     }
-    else if(abs(ball.ang) < 45){  //(15,15),(45,90)
+    else if(abs(ball.ang) < 45){  //(15,15),(45,105)
       go_ang = (abs(ball.ang) - 15) * 2.5 + 15;
     }
     else if(abs(ball.ang) < 90){  //(45,90),(90,135)
@@ -158,6 +149,19 @@ void Attack::attack(){
       go_ang = 1.30 * (abs(ball.ang) - 90) + 135;
       if(ball.world_far > 140){
         go_ang = abs(ball.ang) + 45;
+      }
+    }
+
+    if(wall_around == 1){
+      if(abs(ball.ang) < 30){
+        go_ang = abs(ball.ang);
+      }
+      else{
+        go_ang = abs(ball.ang) * 2;
+      }
+
+      if(400 < Timer.read_ms()){
+        wall_around = 0;
       }
     }
 
@@ -323,7 +327,7 @@ void Attack::attack(){
         }
       }
       else if(abs(degrees(line.vec_first.return_azimuth())) < 45){  //前にラインがあったら
-        if(cam_front.on && abs(ball.ang) < 45){  //ゴール前だったら
+        if(cam_front.on && abs(ball.ang) < 30){  //ゴール前だったら
           A = 22;  //ボールを押し込むやつ
         }
         else{  //notゴール前だったら
@@ -395,7 +399,10 @@ void Attack::attack(){
     if(45 < abs(line.vec.return_azimuth()) && abs(line.vec.return_azimuth()) < 135){
       A = 23;
     }
-    if(500 < Timer.read_ms() && line.LINE_on == 0){
+    if(300 < Timer.read_ms() && line.LINE_on == 0){
+      A = 23;
+    }
+    if(90 < abs(ball.ang)){
       A = 23;
     }
   }
