@@ -119,7 +119,9 @@ void Attack::attack(){
     if(A != B){
       go_flag = 0;
       if(B == 20 || B == 21){
-        wall_around = 1;
+        if(abs(abs(line.ang) - 90) < 30 && 0 < line.ang * ball.ang){
+          wall_around = 1;
+        }
       }
       B = A;
       Timer.reset();
