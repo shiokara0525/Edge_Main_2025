@@ -187,6 +187,8 @@ void loop(){
     kicker.stop();
   }
 
+  cam_front.print();
+
   Serial.print(" Mode: ");
   Serial.println(central.Mode);
 }

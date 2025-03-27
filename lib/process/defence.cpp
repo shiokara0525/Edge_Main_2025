@@ -210,7 +210,7 @@ Vector2D Defence::defence(){
       line_none_flag = 0;
     }
 
-    go_ang = abs(ball.ang) * 1.15;
+    go_ang = abs(ball.ang) * 1.5;
 
     go_ang = go_ang.degree * (ball.ang < 0 ? -1 : 1);
     moving_sort = MOVING_NO_LINE;
@@ -399,9 +399,6 @@ Vector2D Defence::defence(){
   else if(AC_flag == 1){
     AC_val = ac.getCam_val(-cam_front.ang) * 1.2;
   }
-
-  Serial.print(" A : ");
-  Serial.println(A);
 
 
 

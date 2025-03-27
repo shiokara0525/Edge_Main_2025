@@ -46,10 +46,10 @@ int Cam::getCamdata(){
                 center = 0;
             }
             
+            on = 1;
             if(50 < abs(ang)){
                 on = 0;
             }
-            on = 1;
             return 1;
         }
     }
