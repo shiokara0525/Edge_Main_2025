@@ -2,7 +2,13 @@
 
 void Defence::available_set(){
   go_val = central.return_Motor_max();
-  A = 10;
+  if(line.LINE_on){
+    A = 10;
+  }
+  else{
+    A = 15;
+  }
+  
   c = 0;
   Mode_timer.reset();
 }
@@ -276,7 +282,7 @@ Vector2D Defence::defence(){
         Serial.println(" !!! 2 !!! ");
       }
     }
-    else if((350 < Timer.read_ms()) && line.LINE_on == 0 && 90 < abs(line.ang_old)){
+    else if((350 < Timer.read_ms()) && line.LINE_on == 0){
       A = 15;
       A_15_flag = 6;
       Serial.println(" !!! 3 !!! ");
@@ -372,6 +378,14 @@ Vector2D Defence::defence(){
       }
     }
 
+    if(2000 < Timer.read_ms()){
+      if(cam_back.on && cam_back.Size < 20){
+        A = 15;
+        A_15_flag = 8;
+        c = 1;
+      }
+    }
+
 
 
     if(30 < abs(ac.dir)){
@@ -397,7 +411,7 @@ Vector2D Defence::defence(){
     AC_val = ac.getAC_val();
   }
   else if(AC_flag == 1){
-    AC_val = ac.getCam_val(-cam_front.ang) * 1.2;
+    AC_val = ac.getCam_val(-cam_front.ang) * 1.5;
   }
 
 
