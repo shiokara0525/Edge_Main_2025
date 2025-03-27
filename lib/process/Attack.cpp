@@ -65,8 +65,6 @@ void Attack::attack(){
 
   float AC_val = 100;                  //姿勢制御の出力
   int max_val = go_val;                //進む出力
-  Serial.print(" go_val : ");
-  Serial.print(go_val);
   float target = central.ac_tirget;           //目標角度
 
 
@@ -168,7 +166,7 @@ void Attack::attack(){
     }
 
     if(face_goal.getCurrentState() == 0){
-      if((30 < cam_front.Size && (abs(ball.ang) < 15 || (abs(ball.ang) < 30 && abs(cam_front.ang - ball.ang) < 10)))){
+      if((30 < cam_front.Size && cam_front.Size < 50) && (abs(ball.ang) < 15 || (abs(ball.ang) < 30 && abs(cam_front.ang - ball.ang) < 10))){
         face_goal.enterState(1);
       }
     }
@@ -267,9 +265,6 @@ void Attack::attack(){
     if(line.LINE_on){
       A = 20;
     }
-    else if(line.side_flag){
-      A = 21;
-    }
     else if(!ball.ball_get){
       A = 10;
     }
@@ -310,12 +305,12 @@ void Attack::attack(){
 
     if((line.LINE_change == -1 || line.LINE_on == 0) && 200 < Timer.read_ms()){  //踏んでない状態から踏んでる状態になった時
       A = 10;
-      if(150 < abs(degrees(line.vec_first.return_azimuth()))){  //後ろにラインがあったら
+      if(140 < abs(degrees(line.vec_first.return_azimuth()))){  //後ろにラインがあったら
         if(30 < abs(ball.ang) && abs(ball.ang) <= 85){
-          // A = 25;  //前に行く
+          A = 25;  //前に行く
         }
         else if(85 < abs(ball.ang) && abs(ball.ang) < 120){
-          // A = 26;  //横に行く
+          A = 26;  //横に行く
         }
       }
       else if(45 < (degrees(line.vec_first.return_azimuth())) && (degrees(line.vec_first.return_azimuth())) < 135){
@@ -395,13 +390,10 @@ void Attack::attack(){
       kick_ = 1;
     }
 
-    if(line.vec.return_y() < -1.5){
+    if(line.LINE_on && (line.vec.return_y() < -1.41 || (45 < abs(line.ang) && abs(line.ang) < 135))){
       A = 23;
     }
-    if(45 < abs(line.vec.return_azimuth()) && abs(line.vec.return_azimuth()) < 135){
-      A = 23;
-    }
-    if(300 < Timer.read_ms() && line.LINE_on == 0){
+    if(500 < Timer.read_ms() && line.LINE_on == 0){
       A = 23;
     }
     if(90 < abs(ball.ang)){
@@ -420,6 +412,9 @@ void Attack::attack(){
 
     if(!line.LINE_on){
       A = 10;  //戻ってるけどラインを踏んでる限りこのステートから出ない
+    }
+    else if(60 < abs(line.ang) && abs(line.ang) < 120){
+      A = 20;
     }
   }
 
@@ -536,9 +531,9 @@ void Attack::attack(){
     max_val = go_val_back;
   }
 
-  // Serial.print(" A : ");
-  // Serial.print(A);
-  // Serial.println();
+  Serial.print(" A : ");
+  Serial.print(A);
+  Serial.println();
 
   Vector2D go_vec;
   go_vec.set_polar(go_ang.degree,max_val);
