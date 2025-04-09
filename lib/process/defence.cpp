@@ -7,6 +7,7 @@ void Defence::available_set(){
   }
   else{
     A = 15;
+    A_15_flag = 7;
   }
   
   c = 0;
@@ -91,7 +92,7 @@ Vector2D Defence::defence(){
 
     int read_flag;  //1が真後ろ 2が後ろめ 3が前 0が真横
 
-    if(160 < abs(go_ang.degree)){       //進む角度が真後ろにあるとき
+    if(165 < abs(go_ang.degree)){       //進む角度が真後ろにあるとき
       read_flag = READ_BACK;
       go_ang += 180;
     }
@@ -226,7 +227,7 @@ Vector2D Defence::defence(){
       line_none_flag = 1;
     }
 
-    if(300 < Timer.read_ms() && ball.ball_get){
+    if(300 < Timer.read_ms() && ball.ball_get && (!line.LINE_on && 45 < abs(line.ang_old))){
       A = 13;
       c = 1;
     }
@@ -381,7 +382,7 @@ Vector2D Defence::defence(){
     if(2000 < Timer.read_ms()){
       if(cam_back.on && cam_back.Size < 20){
         A = 15;
-        A_15_flag = 8;
+        A_15_flag = 7;
         c = 1;
       }
     }
@@ -411,7 +412,7 @@ Vector2D Defence::defence(){
     AC_val = ac.getAC_val();
   }
   else if(AC_flag == 1){
-    AC_val = ac.getCam_val(-cam_front.ang) * 1.5;
+    AC_val = ac.getCam_val(-cam_front.ang) * 2.0;
   }
 
 

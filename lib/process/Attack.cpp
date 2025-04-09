@@ -146,7 +146,7 @@ void Attack::attack(){
       max_val = 200;
     }
     else{
-      go_ang = 1.30 * (abs(ball.ang) - 90) + 135;
+      go_ang = 1.35 * (abs(ball.ang) - 90) + 135;
       if(ball.world_far > 140){
         go_ang = abs(ball.ang) + 45;
       }
@@ -307,10 +307,10 @@ void Attack::attack(){
       A = 10;
       if(140 < abs(degrees(line.vec_first.return_azimuth()))){  //後ろにラインがあったら
         if(30 < abs(ball.ang) && abs(ball.ang) <= 85){
-          A = 25;  //前に行く
+          // A = 25;  //前に行く
         }
         else if(85 < abs(ball.ang) && abs(ball.ang) < 120){
-          A = 26;  //横に行く
+          // A = 26;  //横に行く
         }
       }
       else if(45 < (degrees(line.vec_first.return_azimuth())) && (degrees(line.vec_first.return_azimuth())) < 135){
