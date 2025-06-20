@@ -5,12 +5,12 @@ BALL::BALL(){
     for(int i = 0; i < 4; i++){
         ball_down[i].setLenth(10);
     }
-    x_MA.setLenth(20);
-    y_MA.setLenth(20);
+    x_MA.setLenth(5);
+    y_MA.setLenth(5);
     B_dif_.setLenth(20);
     B_v.setLenth(10);
     Bang_dif_.setLenth(40);
-    Far.setLenth(10);
+    Far.setLenth(20);
     pinMode(CATCH_PIN,INPUT);
 }
 

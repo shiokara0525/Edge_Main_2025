@@ -133,24 +133,32 @@ void Attack::attack(){
     }
 
 
-    // float confidencial_num = (ball.vec.return_magnitude() - BALL_MAX_NUM * 0.8) * 0.025;
+    float theta = 0;
+    float r_target = 117;
 
-    if(abs(ball.ang) < 15){
-      go_ang = abs(ball.ang);
+
+    if (abs(ball.ang) < 20) {  //(0,0),(20,20)
+      go_ang = ball.ang;
     }
-    else if(abs(ball.ang) < 45){  //(15,15),(45,105)
-      go_ang = (abs(ball.ang) - 15) * 2.5 + 15;
+    else if(abs(ball.ang) < 45){    //(20,20),(60,100)
+      go_ang = (2.0 * (abs(ball.ang) - 20) + 20) * ball.ang / abs(ball.ang);
     }
-    else if(abs(ball.ang) < 90){  //(45,90),(90,135)
-      go_ang = (abs(ball.ang) - 45) + 90;
-      max_val = 200;
+    else if (ball.world_far < r_target) {
+      theta = 90 + (r_target - ball.world_far) * 90 / 120;
+      go_ang = ball.ang + (ball.ang > 0 ? theta : -theta);
+      Serial.print(" theta : ");
+      Serial.print(theta);
+      Serial.print(" !! ");
     }
-    else{
-      go_ang = 1.35 * (abs(ball.ang) - 90) + 135;
-      if(ball.world_far > 140){
-        go_ang = abs(ball.ang) + 45;
-      }
+    else {
+      theta = degrees(asin(r_target / ball.world_far));
+      go_ang = ball.ang + (ball.ang > 0 ? theta : -theta);
+      Serial.print(" theta : ");
+      Serial.print(theta);
+      Serial.print(" !!!!! ");
+      max_val -= 45;
     }
+
 
     if(wall_around == 1){
       if(abs(ball.ang) < 30){
@@ -181,12 +189,15 @@ void Attack::attack(){
       }
     }
 
-    go_ang = go_ang.degree * (ball.ang < 0 ? -1 : 1);  //角度の正負を元に戻す
+    // go_ang = go_ang.degree * (ball.ang < 0 ? -1 : 1);  //角度の正負を元に戻す
 
-    // Serial.println();
-    if(go_flag == 1 && Timer.read_ms() < 300){
-      go_ang = ball.ang;
-    }
+    Serial.print(" theta : ");
+    Serial.print(theta);
+    Serial.print(" g_a : ");
+    Serial.print(go_ang.degree);
+    Serial.print(" ball_far : ");
+    Serial.print(ball.world_far);
+
     ang_old = go_ang.degree;
 
     if(line.LINE_on){

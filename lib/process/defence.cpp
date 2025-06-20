@@ -136,11 +136,11 @@ Vector2D Defence::defence(){
     // Serial.print(" godir : ");
     // Serial.println(go_ang.degree);
 
-    ball_fast.enterState(ball.vec_velocity.return_magnitude() > 30);
+    ball_fast.enterState(ball.vec_velocity.return_magnitude() > 20);
     for(int i = 0; i < 2; i++){
       int dif_val = abs(ball.ang - go_border[i]);
       if(dif_val < stop_range && read_flag != READ_BACK && cam_back.on){  //正面方向にボールがあったら停止するよ
-        if(ball_fast.readStateTimer(0) < 100 && abs(ball.ang) < 45){
+        if(ball_fast.readStateTimer(0) < 50 && abs(ball.ang) < 45){
           Stop_flag = STOP_NO_FAST;  //ボールの速度を原因にストップしてないフラグ
         }
         else{
