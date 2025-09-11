@@ -135,13 +135,13 @@ void Attack::attack(){
 
 
     if(abs(ball.ang) < 15){
-      go_ang = abs(ball.ang);
+      go_ang = abs(ball.ang) * 1.33;
     }
-    else if(abs(ball.ang) < 45){  //(15,15),(45,90)
-      go_ang = (abs(ball.ang) - 15) * 2.5 + 15;
+    else if(abs(ball.ang) < 45){  //(15,20),(45,90)
+      go_ang = (abs(ball.ang) - 20) * 2.33 + 20;
     }
-    else if(abs(ball.ang) < 90){  //(45,90),(90,135)
-      go_ang = (abs(ball.ang) - 45) + 90;
+    else if(abs(ball.ang) < 90){  //(45,90),(90,146.25)
+      go_ang = 1.25 * (abs(ball.ang) - 45) + 90;
       max_val -= 20;
     }
     else{
@@ -163,7 +163,7 @@ void Attack::attack(){
     }
 
     if(face_goal.getCurrentState() == 0){
-      if((30 < cam_front.Size && cam_front.Size < 50) && (abs(ball.ang) < 15 || (abs(ball.ang) < 30 && abs(cam_front.ang - ball.ang) < 10))){
+      if((40 < cam_front.Size && 15 < abs(cam_front.ang)) && abs(ball.ang) < 20){
         face_goal.enterState(1);
       }
     }
@@ -248,9 +248,12 @@ void Attack::attack(){
       rake_flag = 0;
     }
 
-    // if(setplay_flag && 100 < Timer.read_ms()){
-    //   kick_ = 1;
-    // }
+    if(play_time.read_ms() < 300 && setplay_flag == 0){
+      kick_ = 1;
+    }
+    if(200 < play_time.read_ms() && setplay_flag != 0){
+      kick_ = 1;
+    }
     // cam_front.print();
     // Serial.print(" kick_ : ");
     // Serial.print(kick_);
@@ -526,6 +529,11 @@ void Attack::attack(){
 
   Serial.print(" A : ");
   Serial.print(A);
+  Serial.print(" AC_flag : ");
+  Serial.print(AC_flag);
+  Serial.print(" AC_val : ");
+  Serial.print(AC_val);
+  cam_front.print();
   Serial.println();
 
   Vector2D go_vec;
