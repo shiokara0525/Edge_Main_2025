@@ -7,6 +7,7 @@
 #include"Sup.h"                //その他便利クラスの定義
 #include"ESP_communicate.h"    //ESPとの通信関連のクラス定義
 #include"central_availables.h" //ロボットの状態の一番下の部分に使う変数のクラス定義
+#include"mytest.h"             //テストモードの関数定義
 
 timer MOTOR_time;
 int MOTOR_test_num;
@@ -102,45 +103,7 @@ void loop(){
       MOTOR_test_num = 0;
     }
 
-    if(central.test_mode == 0){
-      go_vec.set_polar(ball.ang,1.0);
-      float AC_val = ac.getAC_val();
-      central.set_states(go_vec,200,MOTOR_ON,AC_val,AC_ALL,0);
-    }
-    else if(central.test_mode == 1){
-      // int TIME = MOTOR_time.read_ms();
-      // Serial.print(" MOTOR: ");
-      // Serial.print(TIME);
-      // Serial.println();
-      // if(TIME < 200){
-      //   central.set_states_no_output();
-      // }
-      // else if(TIME < 1200){
-      //   central.set_states_MOTOR_test(MOTOR_test_num);
-      // }
-      // else{
-      //   MOTOR_time.reset();
-      //   MOTOR_test_num++;
-      //   if(4 <= MOTOR_test_num){
-      //     MOTOR_test_num = 0;
-      //   }
-      //   central.set_states_no_output();
-      // }
-      go_vec.set_polar(180,1.0);
-      central.set_states(go_vec,200,MOTOR_ON,0,AC_ALL,0);
-    }
-    else if(central.test_mode == 3){
-      float AC_val = ac.getAC_val();
-      central.set_states_onlyAC(AC_val);
-    }
-    else if(central.test_mode == 4){
-      MOTOR.motor_0();
-      kicker.TEST_();
-      central.set_states_no_output();
-    }
-    else if(central.test_mode == 5){
-      ESP.PS4.run();
-    }
+    mytest();
   }
 
   else if(central.Mode == 10){
@@ -162,6 +125,10 @@ void loop(){
     central.set_states_no_output();
   }
 
+
+
+
+  // ------------------出力部分------------------
   if(central.return_is_set() == 1){
     if(central.return_Motor_on() == MOTOR_STOP){
       MOTOR.motor_0();
