@@ -34,7 +34,7 @@ void Attack::available_set(int *check_val){ //変数を受け取ったり三次�
     Serial.print(central.Values[i]);
   }
   Serial.println();
-  go_val = central.return_Motor_max();
+  go_val = 240;
   play_time.reset();
   first_ang = ac.dir_n;
   goang_ma.setLenth(100);
@@ -64,7 +64,8 @@ void Attack::attack(){
   angle go_ang(ball.ang,true);         //進む角度のオブジェクト
 
   float AC_val = 100;                  //姿勢制御の出力
-  int max_val = go_val;                //進む出力
+  go_val = 240;
+  int max_val = 240;                //進む出力
   Serial.print(" go_val : ");
   Serial.print(go_val);
   float target = central.ac_tirget;           //目標角度

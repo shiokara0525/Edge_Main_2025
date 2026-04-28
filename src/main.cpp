@@ -49,6 +49,9 @@ void loop(){
   cam_front.getCamdata();
   cam_back.getCamdata();
 
+  Serial.print(" MODE ");
+  Serial.print(central.Mode);
+  Serial.println();
 
   if(central.Mode == 0){
     if(central.Mode != central.Mode_old){
@@ -91,52 +94,12 @@ void loop(){
   else if(central.Mode == 3){
     if(central.Mode != central.Mode_old){
       central.Mode_old = central.Mode;
+      attack.available_set(central.Values);
+      central.Mode_timer.reset();
       kicker.stop();
-      ac.setup_2();
-      Serial8.write(38);
-      Serial8.write(10);
-      Serial8.write(1);
-      Serial8.write(37);
-      MOTOR_time.reset();
     }
 
-    if(central.test_mode == 0){
-      go_vec.set_polar(ball.ang,1.0);
-      float AC_val = ac.getAC_val();
-      central.set_states(go_vec,200,MOTOR_ON,AC_val,AC_ALL,0);
-    }
-    else if(central.test_mode == 1){
-      int TIME = MOTOR_time.read_ms();
-      Serial.print(" MOTOR ");
-      Serial.print(TIME);
-      Serial.println();
-
-      for(int i = 0; i < 4; i++){
-        if(TIME < 100){
-          central.set_states_no_output();
-          break;
-        }
-        else if(TIME < 500){
-          central.set_states_MOTOR_test(i);
-          break;
-        }
-        else{
-          TIME -= 500;
-        }
-      }
-    }
-    else if(central.test_mode == 3){
-      float AC_val = ac.getAC_val();
-      central.set_states_onlyAC(AC_val);
-    }
-    else if(central.test_mode == 4){
-      MOTOR.motor_0();
-      kicker.TEST_();
-      central.set_states_no_output();
-    }
-    else if(central.test_mode == 5){
-      ESP.PS4.run();
-    }
+    attack.attack();
   }
 
   else if(central.Mode == 10){
